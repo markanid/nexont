@@ -4,6 +4,7 @@ namespace Modules\Master\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Project\app\Models\Project;
 
 class Company extends Model
 {
@@ -12,6 +13,11 @@ class Company extends Model
 
     public function users()
     {
-        return $this->hasMany(Company::class, 'company_id');
+        return $this->hasMany(User::class, 'company_id');
+    }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'company_id');
     }
 }

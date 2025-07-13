@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Modules\Consumption\app\Models\Consumption;
 use Modules\Estimation\app\Models\Estimation;
 use Modules\Finance\app\Models\Expense;
+use Modules\Project\app\Models\Project;
 use Modules\Purchase\app\Models\Purchase;
 use Modules\Returns\app\Models\Returns;
 use Modules\Sale\app\Models\Sale;
@@ -28,5 +29,10 @@ class User extends Model
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function clientProjects()
+    {
+        return $this->hasMany(Project::class, 'client_id');
     }
 }
