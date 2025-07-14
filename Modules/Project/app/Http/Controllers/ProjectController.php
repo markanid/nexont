@@ -1,56 +1,85 @@
 <?php
 
-namespace Modules\Project\Http\Controllers;
+namespace Modules\Project\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Modules\Master\app\Models\Company;
+use Modules\Master\app\Models\User;
+use Modules\Project\app\Models\Project;
 
 class ProjectController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return view('project::index');
+        $data['projects']   = Project::latest('id')->get();
+        $data['page_title'] = "Project List";
+        $data['title']      = "Projects";
+        return view('project::projects.index', $data);  
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function createOrEdit($id = null)
     {
-        return view('project::create');
+        $project            = $id ? Project::findOrFail($id) : new Project();
+        $data['page_title'] = $id ? "Edit Project" : "Create Project";
+        $data['title']      = "Projects";
+        $data['project']    = $project;
+        $data['project_id'] = $id ? $project->project_id : Project::getProjectID();
+        $data['companies']  = Company::all();
+        $data['clients']    = User::where('role', 'Client')->get();
+        $data['users']      = User::where('role', '!=', 'Client')->get();
+        return view('project::projects.create', $data);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {}
+    public function storeOrUpdate(Request $request)
+    {
+        $request->merge([
+            'start_date' => $request->start_date ? Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d') : null,
+            'end_date'  => $request->end_date ? Carbon::createFromFormat('d/m/Y', $request->end_date)->format('Y-m-d') : null,
+        ]);
 
-    /**
-     * Show the specified resource.
-     */
+        $rules = [
+            'project_id'        => 'required|string|max:255|unique:projects,project_id,' . $request->id,
+            'project_name'      => 'required|string|max:255',
+            'company_id'        => 'required|exists:companies,id',
+            'client_id'         => 'required|exists:users,id',
+            'project_manager_id'=> 'nullable|exists:users,id',
+            'sales_manager_id'  => 'nullable|exists:users,id',
+            'start_date'        => 'nullable|date',
+            'end_date'          => 'nullable|date|after_or_equal:start_date',
+            'project_cost'      => 'nullable|numeric|min:0',
+            'status'            => 'required|in:Pending,Active,Completed,On Hold',
+        ];
+        $validated = $request->validate($rules);
+        $isNew = empty($request->id);
+
+        $project = Project::updateOrCreate(
+            ['id' => $request->id ?? null],
+            $validated
+        );
+    
+        if ($project) {
+            return $isNew
+                ? redirect()->route('projects.index')->with('success', 'Project  created successfully.')
+                : redirect()->route('projects.show', $project->id)->with('success', 'Project details updated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to update project details.');
+        }
+    }
+
     public function show($id)
     {
-        return view('project::show');
+        $data['title']      = "Projects";
+        $data['page_title'] = "Project Details";
+        $data['project']   = Project::findOrFail($id);
+        return view('project::projects.view', $data);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function destroy($id)
     {
-        return view('project::edit');
+        $project = Project::findOrFail($id);
+        $project->delete();
+        return redirect()->route('projects.index')->with('success', 'Record deleted successfully');
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
 }

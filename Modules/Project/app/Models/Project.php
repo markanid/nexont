@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Master\app\Models\Company;
 use Modules\Master\app\Models\User;
-use Modules\Member\app\Models\Employee;
 
 
 class Project extends Model
@@ -29,12 +28,24 @@ class Project extends Model
 
     public function projectManager()
     {
-        return $this->belongsTo(Employee::class, 'project_manager_id');
+        return $this->belongsTo(User::class, 'project_manager_id');
     }
 
     public function salesManager()
     {
-        return $this->belongsTo(Employee::class, 'sales_manager_id');
+        return $this->belongsTo(User::class, 'sales_manager_id');
+    }
+
+    public static function getProjectID()
+    {
+        $lastCode = Project::latest('id')->first();
+        if (!$lastCode) {
+            return 'PRJ_001';
+        }
+        $lastCode = $lastCode->project_id;
+        $codeParts = explode('_', $lastCode);
+        $number = intval(end($codeParts)) + 1;
+        return 'PRJ_' . str_pad($number, 3, '0', STR_PAD_LEFT);
     }
     
 }

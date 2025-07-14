@@ -30,14 +30,14 @@
                     </a>
                 </li>
 
-                {{-- <li class="nav-item">
-                    <a href="{{ route('products.index') }}" class="nav-link {{ menuActive(['products.index', 'products.create', 'products.edit', 'products.show'], 'active') }}">
+                <li class="nav-item">
+                    <a href="{{ route('projects.index') }}" class="nav-link {{ menuActive(['projects.index', 'projects.create', 'projects.edit', 'projects.show'], 'active') }}">
                         <i class="nav-icon fas fa-boxes"></i>
-                        <p>Products</p>
+                        <p>Projects</p>
                     </a>
                 </li>
 
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a href="{{ route('vendors.index') }}" class="nav-link {{ menuActive(['vendors.index', 'vendors.create', 'vendors.edit', 'vendors.show'], 'active') }}">
                         <i class="nav-icon fas fa-users"></i>
                         <p>Suppliers</p>

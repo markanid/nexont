@@ -25,14 +25,4 @@ class Employee extends Model
         $number = intval(end($codeParts)) + 1;
         return 'EMP_' . str_pad($number, 3, '0', STR_PAD_LEFT);
     }
-    
-    public function managedProjects()
-    {
-        return $this->hasMany(Project::class, 'project_manager_id');
-    }
-
-    public function salesProjects()
-    {
-        return $this->hasMany(Project::class, 'sales_manager_id');
-    }
 }

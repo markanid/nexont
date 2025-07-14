@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('project_id')->unique();
             $table->string('project_name');
 
-            $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('client_id');
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->unsignedBigInteger('client_id')->nullable();
             $table->unsignedBigInteger('project_manager_id')->nullable();
             $table->unsignedBigInteger('sales_manager_id')->nullable();
 
@@ -28,10 +28,10 @@ return new class extends Migration
             $table->enum('status', ['Pending', 'Active', 'Completed', 'On Hold'])->default('Pending');
             $table->timestamps();
 
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
-            $table->foreign('client_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('project_manager_id')->references('id')->on('employees')->onDelete('set null');
-            $table->foreign('sales_manager_id')->references('id')->on('employees')->onDelete('set null');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
+            $table->foreign('client_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('project_manager_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('sales_manager_id')->references('id')->on('users')->onDelete('set null');
         });
     }
 
