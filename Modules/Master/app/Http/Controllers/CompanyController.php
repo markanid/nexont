@@ -74,9 +74,9 @@ class CompanyController extends Controller
         return view('master::companies.view',$data);
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        $company = Company::firstOrFail();
+        $company = Company::findOrFail($id);
         if (!empty($company->logo_path) && Storage::disk('public')->exists('company_logos/' . $company->logo_path)) {
             Storage::disk('public')->delete('company_logos/' . $company->logo_path);
         }
