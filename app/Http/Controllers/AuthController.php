@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Modules\Master\app\Models\Company;
 use Modules\Master\app\Models\User;
+use Modules\Member\app\Models\Employee;
 
 class AuthController extends Controller
 {
@@ -42,43 +43,74 @@ class AuthController extends Controller
     }
 
     public function registration(){
-        $hasUsers = User::exists(); 
-        $hasAdminUser = User::where('role', 'Admin')->exists();
-        $hasClientCompany = Company::where('type', 'client')->exists();
-        $clientCompanies = Company::where('type', 'client')->get();
-        // $employees = Employee::all();
-        return view('auth.register', compact('hasUsers', 'hasClientCompany', 'clientCompanies', 'hasAdminUser'));
+        $hasUsers           = User::exists(); 
+        $hasAdminUser       = User::where('role', 'Admin')->exists();
+        $hasClientCompany   = Company::where('type', 'client')->exists();
+        $clientCompanies    = Company::where('type', 'client')->get();
+        $employees          = Employee::all();
+        return view('auth.register', compact('hasUsers', 'hasClientCompany', 'clientCompanies', 'hasAdminUser', 'employees'));
     }
 
     public function registerProcess(Request $request){
+        
+        $request->merge([
+            'name'          => $request->name ? trim($request->name) : null,
+            'employee_name' => $request->employee_name ? trim($request->employee_name) : null,
+        ]);
+
         $rules = [
-            "name"      => 'required',
             "email"     => 'required|email|unique:users',
             "password"  => 'required|min:8|confirmed',
             "role"      => 'required',
         ];
 
+        if (in_array($request->role, ['Admin', 'Client'])) {
+            $rules['name'] = 'required|string|max:255';
+        } else {
+            $rules['employee_name'] = 'required|string|max:255';
+        }
+
         if ($request->role === 'Client') {
             $rules['company_id'] = 'required|exists:companies,id';
         }
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->passes()) {
-            $user = new User();
-            $user->name     = $request->name;
-            $user->email    = $request->email;
-            $user->password = Hash::make($request->password);
-            $user->role     = $request->role;
-        
-            if ($request->role === 'Client') {
-                $user->company_id = $request->company_id;
-            }
-            $user->save();
-            return redirect()->route('auth.login')->with('success', 'You have registered successfully...');
-        } else {
+
+        $messages = [
+            'email.required'         => 'Please enter an email address.',
+            'email.email'            => 'Please enter a valid email address.',
+            'email.unique'           => 'This email is already registered.',
+            'password.required'      => 'Please enter a password.',
+            'password.min'           => 'Password must be at least 8 characters.',
+            'password.confirmed'     => 'Passwords do not match.',
+            'role.required'          => 'Please select a role.',
+            'name.required'          => 'Please enter the user’s full name.',
+            'employee_name.required' => 'Please select an employee from the list.',
+            'company_id.required'    => 'Please select a client company.',
+            'company_id.exists'      => 'The selected company is invalid.',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
             return redirect()->route('auth.registration')
-            ->withInput()
-            ->withErrors($validator); 
+                ->withInput()
+                ->withErrors($validator);
         }
+
+        $finalName = in_array($request->role, ['Admin', 'Client']) 
+            ? $request->name 
+            : $request->employee_name;
+
+        $user = new User();
+        $user->name     = $finalName;
+        $user->email    = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->role     = $request->role;
+
+        if ($request->role === 'Client') {
+            $user->company_id = $request->company_id;
+        }
+
+        $user->save();
+        return redirect()->route('auth.login')->with('success', 'You have registered successfully.');
     }
 
     public function changePassword(Request $request)

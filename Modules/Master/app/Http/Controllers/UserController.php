@@ -11,7 +11,7 @@ use Modules\Master\app\Models\Company;
 use Modules\Master\app\Models\User;
 use Illuminate\Support\Facades\Hash;
 use DataTables;
-
+use Modules\Member\app\Models\Employee;
 
 class UserController extends Controller
 {
@@ -26,11 +26,11 @@ class UserController extends Controller
         $data['user']               = $id ? User::findOrFail($id) : new User();
         $data['title']              = "Users";
         $data['page_title']         = $id ? "Edit User" : "Create User";
-        $data['hasUsers'] = User::exists();
-        $data['hasAdminUser'] = User::where('role', 'Admin')->exists();
+        $data['hasUsers']           = User::exists();
+        $data['hasAdminUser']       = User::where('role', 'Admin')->exists();
         $data['hasClientCompany']   = Company::where('type', 'client')->exists();
         $data['clientCompanies']    = Company::where('type', 'client')->get();
-        // $data['employees'] = Employee::select('id', 'name')->get();
+        $data['employees']          = Employee::select('id', 'name')->get();
         return view('master::users.create', $data);
     }
     
@@ -70,7 +70,7 @@ class UserController extends Controller
             $user->avatar = $filename;
         }    
         $user->save();
-        return redirect()->route('users.showprofile', $user->id)->with('success', 'User details updated successfully.');
+        return redirect()->route('users.show', $user->id)->with('success', 'User details updated successfully.');
     }
 
     public function show($id) {
@@ -121,12 +121,12 @@ class UserController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect()->route('users.index')->with('success', 'Your password has been changed successfully!');
+        return redirect()->route('logout')->with('success', 'Your password has been changed successfully!');
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        $user = User::firstOrFail();
+        $user = User::findOrFail($id);
         if (!empty($user->avatar) && Storage::disk('public')->exists('user_logos/' . $user->avatar)) {
             Storage::disk('public')->delete('user_logos/' . $user->avatar);
         }
