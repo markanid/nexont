@@ -21,7 +21,15 @@
   <div class="card">
     <div class="card-body register-card-body">
       <p class="login-box-msg">Register a new user</p>
-
+       @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+                </ul>
+            </div>
+        @endif
       <form action="{{route('auth.registerProcess')}}" method="post">
         @csrf
         <div class="input-group mb-3">
@@ -97,11 +105,11 @@
         </div>
 
         <div class="input-group mb-3" id="nameDropdownGroup" style="display:none;">
-          <select name="name" class="form-control" tabindex="5">
+          <select name="employee_name" class="form-control" tabindex="5">
             <option value="">-- Select Employee --</option>
-            {{-- @foreach($employees as $employee)
+            @foreach($employees as $employee)
               <option value="{{ $employee->name }}">{{ $employee->name }}</option>
-            @endforeach --}}
+            @endforeach
           </select>
           <div class="input-group-append">
             <div class="input-group-text">

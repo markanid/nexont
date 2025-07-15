@@ -64,6 +64,14 @@
           <!-- /.col -->
         </div>
       </form>
+      
+      <div class="text-center mt-3">
+        <p class="mb-2">Don’t have an account?</p>
+        <a href="{{ route('auth.registration') }}" 
+          class="btn btn-outline-primary btn-sm btn-block">
+          <i class="fas fa-user-plus"></i> Register a New User
+        </a>
+      </div>
         
     </div>
         
