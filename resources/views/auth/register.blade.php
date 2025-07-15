@@ -157,8 +157,12 @@
       <div class="social-auth-links text-center">
         <p>- OR -</p>
       </div>
-
-      <a href="{{route('auth.login')}}" class="text-center">I already have an account</a>
+      <div class="text-center mt-3">
+        <p class="mb-2">Already have an account?</p>
+        <a href="{{ route('auth.login') }}" class="btn btn-outline-primary btn-block">
+          <i class="fas fa-sign-in-alt"></i> Sign In Here
+        </a>
+      </div>
     </div>
     <!-- /.form-box -->
   </div><!-- /.card -->
