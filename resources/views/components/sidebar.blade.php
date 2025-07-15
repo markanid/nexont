@@ -101,6 +101,7 @@
                     </ul>
                 </li> --}}
 
+                @if(auth()->user()->role != 'Client')
                 <!-- Master -->
                 <li class="nav-item {{ menuActive(['companies.index', 'companies.edit', 'companies.create', 'companies.show', 'users.index', 'users.create', 'users.edit', 'users.show'], 'menu-open') }}">
                     <a href="#" class="nav-link {{ menuActive(['companies.index', 'companies.edit', 'companies.create', 'companies.show', 'users.index', 'users.create', 'users.edit', 'users.show'], 'active') }}">
@@ -166,6 +167,7 @@
                         </li>
                     </ul>
                 </li>
+                @endif
 
             </ul>
         </nav>

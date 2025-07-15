@@ -26,7 +26,7 @@
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-user-cog"></i> {{$page_title}}</h3>
-                    <a class="btn btn-primary btn-sm btn-flat float-right" href="{{route('users.create')}}"><i class="fas fa-plus-circle"></i> Create</a>
+                    {{-- <a class="btn btn-primary btn-sm btn-flat float-right" href="{{route('users.create')}}"><i class="fas fa-plus-circle"></i> Create</a> --}}
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -52,7 +52,7 @@
                                     <td>{{ date('d/m/Y', strtotime($user->created_at)) }}</td>
                                     <td>
                                     <a class="btn btn-app" href="{{route('users.edit', $user->id)}}"><i class="far fa-edit"></i></a>
-                                    @if($user->role != 'Admin')
+                                    @if($user->role != 'Admin' && $user->id != auth()->user()->id)
                                         <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('users.delete', ['id' => $user->id]) }}"><i class="far fa-trash-alt"></i></a>
                                     @endif
                                     </td>
@@ -69,32 +69,5 @@
 @endsection
 @section('scripts')
 @include('partials.delete-modal-script')
-<script>
-    $(document).ready(function(){
-        var Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-        });
-        var table = $("#user_table").DataTable({
-            "responsive": true, "lengthChange": false, "autoWidth": false,
-            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-        }).buttons().container().appendTo('#user_table_wrapper .col-md-6:eq(0)');
-
-        // Check for the flash message and display the SweetAlert2 popup
-        @if(session('success'))
-            Toast.fire({
-                icon: 'success',
-                title: '{{ session('success') }}'
-            });
-        @endif
-        @if(session('info'))
-            Toast.fire({
-                icon: 'info',
-                title: '{{ session('info') }}'
-            });
-        @endif
-    });
-</script>
+@include('partials.common-index-script', ['tableId' => 'user_table'])
 @endsection

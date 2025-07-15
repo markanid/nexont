@@ -26,7 +26,9 @@
         <div class="card-tools">
             <a class="btn btn-warning btn-sm btn-flat" href="{{route('users.changePasswordForm')}}"><i class="fas fa-key"></i> Change Password</a>
             <a class="btn btn-info btn-sm btn-flat" href="{{route('users.edit', $user->id)}}"><i class="fas fa-edit"></i> Edit</a>
-            <a class="btn btn-dark btn-sm btn-flat" href="{{route('users.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+            @if(auth()->user()->role != 'Client')
+                <a class="btn btn-dark btn-sm btn-flat" href="{{route('users.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+            @endif
         </div>
     </div>
     <div class="card-body">

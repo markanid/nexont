@@ -10,7 +10,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{route('dashboard')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{{route('users.index')}}">{{ $title }}</a></li>
+                    <li class="breadcrumb-item">@if(auth()->user()->role != 'Client')<a href="{{route('users.index')}}">{{ $title }}</a>@else{{ $title }}@endif</li>
                     <li class="breadcrumb-item active">{{$page_title}}</li>
                 </ol>
             </div>
@@ -23,8 +23,10 @@
 <div class="card card-primary card-outline">
     <div class="card-header">
         <h3 class="card-title"><i class="fas fa-user-cog"></i> {{$page_title}}</h3>
-        <a class="btn btn-dark btn-sm btn-flat float-right" href="{{route('users.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
-        @if ($errors->any())
+        @if(auth()->user()->role != 'Client')
+            <a class="btn btn-dark btn-sm btn-flat float-right" href="{{route('users.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
+        @endif
+        {{-- @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
                 @foreach ($errors->all() as $error)
@@ -32,7 +34,7 @@
                 @endforeach
                 </ul>
             </div>
-        @endif
+        @endif --}}
     </div>
     <form id="addUser" method="post" action="{{ route('users.update') }}" enctype="multipart/form-data">
         @csrf
@@ -117,11 +119,11 @@
                 <div class="col-md-4" id="nameDropdownGroup" style="display:none;">
                 <select name="employee_name" class="form-control" tabindex="4">
                     <option value="">-- Select Employee --</option>
-                    {{-- @foreach($employees as $employee)
+                    @foreach($employees as $employee)
                         <option value="{{ $employee->name }}" {{ (old('name', $user->name ?? '') == $employee->name) ? 'selected' : '' }}>
                             {{ $employee->name }}
                         </option>
-                    @endforeach --}}
+                    @endforeach
                 </select>
                 @error('name')
                     <p class="invalid-feedback">{{ $message }}</p>
