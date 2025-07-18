@@ -25,7 +25,7 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->decimal('project_cost', 15, 2)->default(0.00);
 
-            $table->enum('status', ['Pending', 'Active', 'Completed', 'On Hold'])->default('Pending');
+            $table->enum('status', ['Planned', 'On Going', 'Completed', 'On Hold', 'Cancelled'])->default('Planned');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');

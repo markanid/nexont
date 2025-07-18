@@ -24,7 +24,7 @@
             <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu" data-accordion="false">
 
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link {{ menuActive(['profile.dashboard'], 'active') }}">
+                    <a href="{{ route('dashboard') }}" class="nav-link {{ menuActive(['dashboard'], 'active') }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
                         <p>Dashboard</p>
                     </a>

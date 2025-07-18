@@ -160,7 +160,7 @@
                     <div class="form-group">
                         <label>Status</label>
                         <select name="status" class="form-control" tabindex="9">
-                             @foreach(['Pending', 'Active', 'Completed', 'On Hold'] as $status)
+                             @foreach(['Planned', 'On Going', 'Completed', 'On Hold', 'Cancelled'] as $status)
                                 <option value="{{ $status }}" {{ old('status', $project->status ?? '') == $status ? 'selected' : '' }}>{{ $status }}</option>
                             @endforeach
                         </select>
