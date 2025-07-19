@@ -21,15 +21,13 @@
   <div class="card">
     <div class="card-body register-card-body">
       <p class="login-box-msg">Register a new user</p>
-       @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-                </ul>
-            </div>
-        @endif
+      @if (session('success'))
+          <div class="alert alert-success">{{ session('success') }}</div>
+      @endif
+
+      @if (session('error'))
+          <div class="alert alert-danger">{{ session('error') }}</div>
+      @endif
       <form action="{{route('auth.registerProcess')}}" method="post">
         @csrf
         <div class="input-group mb-3">
@@ -62,38 +60,9 @@
             </div>
           </div>
         </div>
-        <div class="input-group mb-3">
-          <select name="role" id="role" class="form-control" tabindex="4">
-            <option value="">-- Select Role --</option>
-            @if (!$hasUsers)
-              @if (!$hasAdminUser)
-                <option value="Admin">Admin</option>
-              @endif
-            @else
-              @if (!$hasAdminUser)
-                <option value="Admin">Admin</option>
-              @endif
-              <option value="Project Manager">Project Manager</option>
-              <option value="PMO">PMO</option>
-              <option value="Sales Manager">Sales Manager</option>
-              <option value="Accountant">Accountant</option>
-              @if ($hasClientCompany)
-                <option value="Client">Client</option>
-              @endif
-            @endif
-          </select>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user-tag"></span>
-            </div>
-          </div>
-          @error('role')
-            <p class="invalid-feedback">{{ $message }}</p>
-          @enderror
-        </div>
 
-        <div class="input-group mb-3" id="nameTextGroup" style="display:none;">
-          <input type="text" name="name" class="form-control" placeholder="Full name" tabindex="5">
+        <div class="input-group mb-3">
+          <input type="text" name="name" class="form-control" placeholder="Full name" tabindex="4">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-user"></span>
@@ -103,44 +72,11 @@
             <p class="invalid-feedback">{{ $message }}</p>
           @enderror
         </div>
-
-        <div class="input-group mb-3" id="nameDropdownGroup" style="display:none;">
-          <select name="employee_name" class="form-control" tabindex="5">
-            <option value="">-- Select Employee --</option>
-            @foreach($employees as $employee)
-              <option value="{{ $employee->name }}">{{ $employee->name }}</option>
-            @endforeach
-          </select>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user"></span>
-            </div>
-          </div>
-          @error('employee_id')
-            <p class="invalid-feedback">{{ $message }}</p>
-          @enderror
-        </div>
-
-        <div class="input-group mb-3" id="clientCompanyBox" style="display:none;">
-          <select name="company_id" id="company_id" class="form-control" tabindex="6">
-            <option value="">-- Select Client Company --</option>
-            @foreach($clientCompanies as $company)
-              <option value="{{ $company->id }}">{{ $company->name }}</option>
-            @endforeach
-          </select>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-building"></span>
-            </div>
-          </div>
-          @error('company_id')
-            <p class="invalid-feedback">{{ $message }}</p>
-          @enderror
-        </div>      
+ 
         <div class="row">
           <div class="col-8">
             <div class="icheck-primary">
-              <input type="checkbox" tabindex="6" id="agreeTerms" name="terms" value="agree">
+              <input type="checkbox" tabindex="5" id="agreeTerms" name="terms" value="agree">
               <label for="agreeTerms">
                I agree to the <a href="#">terms</a>
               </label>
@@ -148,7 +84,7 @@
           </div>
           <!-- /.col -->
           <div class="col-4">
-            <button type="submit" tabindex="7" class="btn btn-primary btn-block">Register</button>
+            <button type="submit" tabindex="6" class="btn btn-primary btn-block">Register</button>
           </div>
           <!-- /.col -->
         </div>
@@ -198,48 +134,6 @@
   document.getElementById('eyeIcon2').addEventListener('click', function () {
     togglePasswordVisibility('password_confirmation', 'eyeIcon2');
   });
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const roleSelect = document.getElementById('role');
-    const clientCompanyBox = document.getElementById('clientCompanyBox');
-    const nameTextGroup = document.getElementById('nameTextGroup');
-    const nameDropdownGroup = document.getElementById('nameDropdownGroup');
-
-    function toggleClientCompanyBox() {
-        const selectedRole = roleSelect.value;
-        if (selectedRole === 'Client') {
-            clientCompanyBox.style.display = 'flex'; // or 'block'
-        } else {
-            clientCompanyBox.style.display = 'none';
-        }
-    }
-
-    function toggleNameFields() {
-        const selectedRole = roleSelect.value;
-        if (selectedRole === 'Admin' || selectedRole === 'Client') {
-            nameTextGroup.style.display = 'flex';    // Show text input
-            nameDropdownGroup.style.display = 'none'; // Hide dropdown
-        } else if (selectedRole) {
-            nameTextGroup.style.display = 'none';    // Hide text input
-            nameDropdownGroup.style.display = 'flex';  // Show dropdown
-        } else {
-            // No role selected
-            nameTextGroup.style.display = 'none';
-            nameDropdownGroup.style.display = 'none';
-        }
-    }
-
-    // Initial load
-    toggleClientCompanyBox();
-    toggleNameFields();
-
-    // On change
-    roleSelect.addEventListener('change', function () {
-        toggleClientCompanyBox();
-        toggleNameFields();
-    });
-});
 </script>
 </body>
 </html>

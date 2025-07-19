@@ -26,7 +26,7 @@
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-user-cog"></i> {{$page_title}}</h3>
-                    {{-- <a class="btn btn-primary btn-sm btn-flat float-right" href="{{route('users.create')}}"><i class="fas fa-plus-circle"></i> Create</a> --}}
+                    <a class="btn btn-primary btn-sm btn-flat float-right" href="{{route('users.create')}}"><i class="fas fa-plus-circle"></i> Create</a>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">

@@ -23,42 +23,67 @@ class UserController extends Controller
     }
 
     public function createOrEdit($id = null) {
-        $data['user']               = $id ? User::findOrFail($id) : new User();
-        $data['title']              = "Users";
-        $data['page_title']         = $id ? "Edit User" : "Create User";
-        $data['hasUsers']           = User::exists();
-        $data['hasAdminUser']       = User::where('role', 'Admin')->exists();
-        $data['hasClientCompany']   = Company::where('type', 'client')->exists();
-        $data['clientCompanies']    = Company::where('type', 'client')->get();
-        $data['employees']          = Employee::select('id', 'name')->get();
+        $user = $id ? User::findOrFail($id) : new User();
+
+        $isEdit = isset($user->id);
+        $isAdminEdit = $isEdit && $user->role === 'Admin';
+
+        $data = [
+            'user'              => $user,
+            'title'             => "Users",
+            'page_title'        => $isEdit ? "Edit User" : "Create User",
+            'isEdit'            => $isEdit,
+            'isAdminEdit'       => $isAdminEdit,
+            'hasUsers'          => User::exists(),
+            'hasAdminUser'      => User::where('role', 'Admin')->exists(),
+            'hasClientCompany'  => Company::where('type', 'client')->exists(),
+            'clientCompanies'   => Company::where('type', 'client')->get(),
+            'employees'         => Employee::select('id', 'name')->get(),
+        ];
         return view('master::users.create', $data);
     }
     
     public function storeOrUpdate(Request $request)
     {
-        $role = $request->input('role');
+        $role       = $request->input('role');
+        $isUpdate   = $request->filled('id');
+        $userId     = $request->id ?? null;
+        
         $rules = [
-            'email'       => 'nullable|email',
-            'role'        => 'nullable|string|max:255',
-            'company_id'  => $role === 'Client' ? 'required|string|max:255' : 'nullable|string|max:255',
-            'avatar'      => 'nullable|image|mimes:jpg,png,jpeg|max:300000',
+            'role'   => 'required|string|in:Admin,Client,Project Manager,PMO,Sales Manager,Accountant',
+            'avatar' => 'nullable|image|mimes:jpg,png,jpeg|max:3000', // 3MB max
         ];
 
-        // Conditional validation for name
+        if ($isUpdate) {
+            $rules['email']     = 'required|email|unique:users,email,' . $userId;
+            $rules['password']  = 'nullable|min:8|confirmed';
+        } else {
+            $rules['email']     = 'required|email|unique:users,email';
+            $rules['password']  = 'required|min:8|confirmed';
+        }
+
         if (in_array($role, ['Admin', 'Client'])) {
             $rules['name'] = 'required|string|max:100';
         } else {
             $rules['employee_name'] = 'required|string|exists:employees,name';
         }
 
-        $validated = $request->validate($rules);
+        if ($role === 'Client') {
+            $rules['company_id'] = 'required|exists:companies,id';
+        }
 
-        $name = in_array($role, ['Admin', 'Client']) ? $request->name : $request->employee_name;
-        $user = User::findOrFail($request->id);
-        $user->email      = $request->email;
-        $user->role       = $request->role;
-        $user->name       = $name;
-        $user->company_id = $request->company_id;
+        $validated = $request->validate($rules);
+        
+        $user = $isUpdate ? User::findOrFail($userId) : new User();
+
+        $user->email      = $validated['email'];
+        $user->role       = $validated['role'];
+        $user->name       = in_array($role, ['Admin', 'Client']) ? $validated['name'] : $validated['employee_name'] ?? $user->name;
+        $user->company_id = $validated['company_id'] ?? null;
+
+        if (!$isUpdate || $request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
 
         if ($request->hasFile('avatar')) {
             if ($user && $user->avatar) {
@@ -70,7 +95,13 @@ class UserController extends Controller
             $user->avatar = $filename;
         }    
         $user->save();
-        return redirect()->route('users.show', $user->id)->with('success', 'User details updated successfully.');
+        if ($user) {
+            return $isUpdate
+                ? redirect()->route('users.show', $user->id)->with('success', 'User details updated successfully.')
+                : redirect()->route('users.index')->with('success', 'User created successfully.');
+        } else {
+            return redirect()->back()->with('error', 'Failed to user company details.');
+        }
     }
 
     public function show($id) {
