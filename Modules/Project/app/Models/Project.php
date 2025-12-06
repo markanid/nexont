@@ -12,9 +12,9 @@ class Project extends Model
 {
     use HasFactory;
     
-    protected $fillable = ['project_id', 'project_name', 'company_id', 'client_id', 'project_manager_id', 'sales_manager_id', 'start_date', 'end_date', 'project_cost', 'status'];
+    protected $fillable = ['project_id', 'project_name', 'company_id', 'client_id', 'project_manager_id', 'sales_manager_id', 'start_date', 'project_cid', 'po', 'apr_main_steel', 'apr_misc_steel', 'po_main_sd', 'po_misc_sd', 'po_engineering', 'po_currency', 'kitty', 'covalue', 'status'];
 
-    protected $casts = ['start_date' => 'date', 'end_date' => 'date', 'project_cost'  => 'decimal:2'];
+    protected $casts = ['start_date' => 'date', 'po_main_sd'  => 'float', 'po_misc_sd'  => 'float', 'po_engineering'  => 'float', 'kitty'  => 'float', 'covalue'  => 'float'];
 
     public function company()
     {

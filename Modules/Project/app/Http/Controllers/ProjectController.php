@@ -29,6 +29,7 @@ class ProjectController extends Controller
         $data['companies']  = Company::all();
         $data['clients']    = User::where('role', 'Client')->get();
         $data['users']      = User::where('role', '!=', 'Client')->get();
+        $data['currencies'] = config('currencies.list');
         return view('project::projects.create', $data);
     }
 
@@ -36,7 +37,6 @@ class ProjectController extends Controller
     {
         $request->merge([
             'start_date' => $request->start_date ? Carbon::createFromFormat('d/m/Y', $request->start_date)->format('Y-m-d') : null,
-            'end_date'  => $request->end_date ? Carbon::createFromFormat('d/m/Y', $request->end_date)->format('Y-m-d') : null,
         ]);
 
         $rules = [
@@ -47,9 +47,17 @@ class ProjectController extends Controller
             'project_manager_id'=> 'nullable|exists:users,id',
             'sales_manager_id'  => 'nullable|exists:users,id',
             'start_date'        => 'nullable|date',
-            'end_date'          => 'nullable|date|after_or_equal:start_date',
-            'project_cost'      => 'nullable|numeric|min:0',
-            'status'            => 'required|in:Pending,Active,Completed,On Hold',
+            'project_cid'       => 'nullable|numeric',
+            'po'                => 'nullable|string',
+            'apr_main_steel'    => 'nullable|numeric',
+            'apr_misc_steel'    => 'nullable|numeric',
+            'po_main_sd'        => 'nullable|numeric',
+            'po_misc_sd'        => 'nullable|numeric',
+            'po_engineering'    => 'nullable|numeric',
+            'po_currency'       => 'nullable|string',
+            'kitty'             => 'nullable|numeric',
+            'covalue'           => 'nullable|numeric',
+            'status'            => 'required|in:Planned,On Going,Completed,On Hold,Cancelled',
         ];
         $validated = $request->validate($rules);
         $isNew = empty($request->id);

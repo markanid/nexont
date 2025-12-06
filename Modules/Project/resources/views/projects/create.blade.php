@@ -47,13 +47,13 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>NexonT Project ID <sup>*</sup></label>
-                        <input type="text" name="project_id" class="form-control" value="{{ old('project_id', $project->project_id ?? $project_id) }}" readonly>
+                        <input type="text" name="project_id" id="project_id" class="form-control" value="{{ old('project_id', $project->project_id ?? $project_id) }}" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Project Name <sup>*</sup></label>
-                        <input type="text" name="project_name" class="form-control" value="{{ old('project_name', $project->project_name ?? '') }}" tabindex="1">
+                        <input type="text" name="project_name" id="project_name" class="form-control" value="{{ old('project_name', $project->project_name ?? '') }}" tabindex="1">
                         @if ($errors->has('project_name'))
                           <span class="text-danger">{{ $errors->first('project_name') }}</span>
                         @endif
@@ -62,7 +62,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Client Company Name <sup>*</sup></label>
-                        <select name="company_id" class="form-control" tabindex="2">
+                        <select name="company_id" id="company_id" class="form-control" tabindex="2">
                             <option value="">-- Select Company --</option>
                             @foreach($companies as $company)
                                 <option value="{{ $company->id }}" {{ old('company_id', $project->company_id ?? '') == $company->id ? 'selected' : '' }}>{{ $company->name }}</option>
@@ -77,7 +77,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Client POC <sup>*</sup></label>
-                        <select name="client_id" class="form-control" tabindex="3">
+                        <select name="client_id" id="client_id" class="form-control" tabindex="3">
                             <option value="">-- Select Client --</option>
                             @foreach($clients as $client)
                                 <option value="{{ $client->id }}" {{ old('client_id', $project->client_id ?? '') == $client->id ? 'selected' : '' }}>
@@ -93,7 +93,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>NexonT PM <sup>*</sup></label>
-                        <select name="project_manager_id" class="form-control" tabindex="4">
+                        <select name="project_manager_id" id="project_manager_id" class="form-control" tabindex="4">
                             <option value="">-- Select Project-Manager --</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}" {{ old('project_manager_id', $project->project_manager_id ?? '') == $user->id ? 'selected' : '' }}>
@@ -109,7 +109,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Sales Manager <sup>*</sup></label>
-                        <select name="sales_manager_id" class="form-control" tabindex="5">
+                        <select name="sales_manager_id" id="sales_manager_id" class="form-control" tabindex="5">
                             <option value="">-- Select Sales-Manager --</option>
                             @foreach($users as $user)
                                 <option value="{{ $user->id }}" {{ old('sales_manager_id', $project->sales_manager_id ?? '') == $user->id ? 'selected' : '' }}>
@@ -122,20 +122,42 @@
                         @endif
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Client Project ID</label>
+                        <input type="text" name="project_cid" id="project_cid" class="form-control" value="{{ old('project_cid', $project->project_cid ?? '0.00') }}" tabindex="6">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Purchase Order# </label>
+                        <input type="text" name="po" id="po" class="form-control" value="{{ old('po', $project->po ?? '') }}" tabindex="7">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" id="status" class="form-control" tabindex="8">
+                             @foreach(['Planned', 'On Going', 'Completed', 'On Hold', 'Cancelled'] as $status)
+                                <option value="{{ $status }}" {{ old('status', $project->status ?? '') == $status ? 'selected' : '' }}>{{ $status }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
           
                 <div class="col-md-6">
                     <div class="group-box">
-                        <label class="group-title">Approval Schedule</label>
+                        <label class="group-title">Approval Schedule [Weeks]</label>
                         <div class="row mt-2">
                             <div class="col-6">
                                 <label class="small">Main Steel</label>
-                                <input type="text" name="apr_main_steel" class="form-control"
-                                    value="{{ old('apr_main_steel', $project->apr_main_steel ?? '') }}" tabindex="6">
+                                <input type="text" name="apr_main_steel" id="apr_main_steel" class="form-control"
+                                    value="{{ old('apr_main_steel', $project->apr_main_steel ?? '') }}" tabindex="9">
                             </div>
                             <div class="col-6">
                                 <label class="small">Misc Steel</label>
-                                <input type="text" name="apr_misc_steel" class="form-control"
-                                    value="{{ old('apr_misc_steel', $project->apr_misc_steel ?? '') }}" tabindex="7">
+                                <input type="text" name="apr_misc_steel" id="apr_misc_steel" class="form-control"
+                                    value="{{ old('apr_misc_steel', $project->apr_misc_steel ?? '') }}" tabindex="10">
                             </div>
                         </div>
                     </div>
@@ -145,20 +167,28 @@
                     <div class="group-box">
                         <label class="group-title">PO Value</label>
                         <div class="row mt-2">
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label class="small">Main SD</label>
-                                <input type="text" name="po_main_sd" class="form-control"
-                                    value="{{ old('po_main_sd', $project->po_main_sd ?? '0.00') }}" tabindex="8">
+                                <input type="text" name="po_main_sd" id="po_main_sd" class="form-control" value="{{ old('po_main_sd', $project->po_main_sd ?? '0.00') }}" tabindex="11">
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label class="small">Misc SD</label>
-                                <input type="text" name="po_misc_sd" class="form-control"
-                                    value="{{ old('po_misc_sd', $project->po_misc_sd ?? '0.00') }}" tabindex="9">
+                                <input type="text" name="po_misc_sd" id="po_misc_sd" class="form-control" value="{{ old('po_misc_sd', $project->po_misc_sd ?? '0.00') }}" tabindex="12">
                             </div>
-                            <div class="col-4">
+                            <div class="col-3">
                                 <label class="small">Engineering</label>
-                                <input type="text" name="po_engineering" class="form-control"
-                                    value="{{ old('po_engineering', $project->po_engineering ?? '0.00') }}" tabindex="10">
+                                <input type="text" name="po_engineering" id="po_engineering" class="form-control" value="{{ old('po_engineering', $project->po_engineering ?? '0.00') }}" tabindex="13">
+                            </div>
+                            <div class="col-3 mb-2">
+                                <label class="small">Currency</label>
+                                <select name="po_currency" id="po_currency" class="form-control">
+                                    @foreach($currencies as $code => $name)
+                                        <option value="{{ $code }}"
+                                            {{ old('po_currency', $project->po_currency ?? 'INR') == $code ? 'selected' : '' }}>
+                                            {{ $code }} - {{ $name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -168,33 +198,9 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Client Project ID</label>
-                        <input type="text" name="projecid" class="form-control" value="{{ old('projecid', $project->projecid ?? '0.00') }}" tabindex="11">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Purchase Order# </label>
-                        <input type="text" name="po" class="form-control" value="{{ old('po', $project->po ?? '0.00') }}" tabindex="12">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Kitty Value</label>
-                        <input type="text" name="kitty" class="form-control" value="{{ old('kitty', $project->kitty ?? '0.00') }}" tabindex="13">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Change Order Value</label>
-                        <input type="text" name="covalue" class="form-control" value="{{ old('covalue', $project->covalue ?? '0.00') }}" tabindex="14">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
                         <label>Start Date</label>
                         <div class="input-group date" id="start_date" data-target-input="nearest">
-                            <input type="text" name="start_date" class="form-control" value="{{ old('start_date', isset($project->start_date) ? \Carbon\Carbon::parse ($project->start_date)->format('d/m/Y') : '') }}" tabindex="15">
+                            <input type="text" name="start_date" class="form-control" value="{{ old('start_date', isset($project->start_date) ? \Carbon\Carbon::parse ($project->start_date)->format('d/m/Y') : '') }}" tabindex="14">
                             <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -206,19 +212,21 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Status</label>
-                        <select name="status" class="form-control" tabindex="16">
-                             @foreach(['Planned', 'On Going', 'Completed', 'On Hold', 'Cancelled'] as $status)
-                                <option value="{{ $status }}" {{ old('status', $project->status ?? '') == $status ? 'selected' : '' }}>{{ $status }}</option>
-                            @endforeach
-                        </select>
+                        <label>Kitty Value</label>
+                        <input type="text" name="kitty" id="kitty" class="form-control" value="{{ old('kitty', $project->kitty ?? '0.00') }}" tabindex="15" readOnly>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Change Order Value</label>
+                        <input type="text" name="covalue" id="covalue" class="form-control" value="{{ old('covalue', $project->covalue ?? '0.00') }}" tabindex="16" readOnly>
                     </div>
                 </div>
             </div>
         </div>
         <div class="card-footer" align="center">
             <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="17"><i class="fas fa-save"></i> Save</button>
-             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="11"><i class="fas fa-undo-alt"></i> Reset</button>
+             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="18"><i class="fas fa-undo-alt"></i> Reset</button>
         </div>
     </form>
 </div>
@@ -272,9 +280,27 @@ $(function () {
     $('#start_date').datetimepicker({
         format: 'DD/MM/YYYY'
     });
-    $('#end_date').datetimepicker({
-        format: 'DD/MM/YYYY'
-    });
+});
+
+$(function () {
+
+    function calculateKitty() {
+        let main = parseFloat($("#po_main_sd").val()) || 0;
+        let misc = parseFloat($("#po_misc_sd").val()) || 0;
+        let eng  = parseFloat($("#po_engineering").val()) || 0;
+        let co   = parseFloat($("#covalue").val()) || 0;
+
+        let total = main + misc + eng + co;
+
+        $("#kitty").val(total.toFixed(2));
+    }
+
+    // Trigger calculation when values change
+    $("#po_main_sd, #po_misc_sd, #po_engineering, #covalue").on("input", calculateKitty);
+
+    // Run once on page load (for edit mode)
+    calculateKitty();
+
 });
 </script>
 @endsection
