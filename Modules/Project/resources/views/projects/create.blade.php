@@ -46,7 +46,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Project ID <sup>*</sup></label>
+                        <label>NexonT Project ID <sup>*</sup></label>
                         <input type="text" name="project_id" class="form-control" value="{{ old('project_id', $project->project_id ?? $project_id) }}" readonly>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Company <sup>*</sup></label>
+                        <label>Client Company Name <sup>*</sup></label>
                         <select name="company_id" class="form-control" tabindex="2">
                             <option value="">-- Select Company --</option>
                             @foreach($companies as $company)
@@ -76,7 +76,7 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Client <sup>*</sup></label>
+                        <label>Client POC <sup>*</sup></label>
                         <select name="client_id" class="form-control" tabindex="3">
                             <option value="">-- Select Client --</option>
                             @foreach($clients as $client)
@@ -92,7 +92,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Project Manager <sup>*</sup></label>
+                        <label>NexonT PM <sup>*</sup></label>
                         <select name="project_manager_id" class="form-control" tabindex="4">
                             <option value="">-- Select Project-Manager --</option>
                             @foreach($users as $user)
@@ -122,11 +122,79 @@
                         @endif
                     </div>
                 </div>
+          
+                <div class="col-md-6">
+                    <div class="group-box">
+                        <label class="group-title">Approval Schedule</label>
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <label class="small">Main Steel</label>
+                                <input type="text" name="apr_main_steel" class="form-control"
+                                    value="{{ old('apr_main_steel', $project->apr_main_steel ?? '') }}" tabindex="6">
+                            </div>
+                            <div class="col-6">
+                                <label class="small">Misc Steel</label>
+                                <input type="text" name="apr_misc_steel" class="form-control"
+                                    value="{{ old('apr_misc_steel', $project->apr_misc_steel ?? '') }}" tabindex="7">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="group-box">
+                        <label class="group-title">PO Value</label>
+                        <div class="row mt-2">
+                            <div class="col-4">
+                                <label class="small">Main SD</label>
+                                <input type="text" name="po_main_sd" class="form-control"
+                                    value="{{ old('po_main_sd', $project->po_main_sd ?? '0.00') }}" tabindex="8">
+                            </div>
+                            <div class="col-4">
+                                <label class="small">Misc SD</label>
+                                <input type="text" name="po_misc_sd" class="form-control"
+                                    value="{{ old('po_misc_sd', $project->po_misc_sd ?? '0.00') }}" tabindex="9">
+                            </div>
+                            <div class="col-4">
+                                <label class="small">Engineering</label>
+                                <input type="text" name="po_engineering" class="form-control"
+                                    value="{{ old('po_engineering', $project->po_engineering ?? '0.00') }}" tabindex="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Client Project ID</label>
+                        <input type="text" name="projecid" class="form-control" value="{{ old('projecid', $project->projecid ?? '0.00') }}" tabindex="11">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Purchase Order# </label>
+                        <input type="text" name="po" class="form-control" value="{{ old('po', $project->po ?? '0.00') }}" tabindex="12">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Kitty Value</label>
+                        <input type="text" name="kitty" class="form-control" value="{{ old('kitty', $project->kitty ?? '0.00') }}" tabindex="13">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Change Order Value</label>
+                        <input type="text" name="covalue" class="form-control" value="{{ old('covalue', $project->covalue ?? '0.00') }}" tabindex="14">
+                    </div>
+                </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Start Date</label>
                         <div class="input-group date" id="start_date" data-target-input="nearest">
-                            <input type="text" name="start_date" class="form-control" value="{{ old('start_date', isset($project->start_date) ? \Carbon\Carbon::parse ($project->start_date)->format('d/m/Y') : '') }}" tabindex="6">
+                            <input type="text" name="start_date" class="form-control" value="{{ old('start_date', isset($project->start_date) ? \Carbon\Carbon::parse ($project->start_date)->format('d/m/Y') : '') }}" tabindex="15">
                             <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -138,28 +206,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>End Date</label>
-                        <div class="input-group date" id="end_date" data-target-input="nearest">
-                            <input type="text" name="end_date" class="form-control" value="{{ old('end_date', isset($project->end_date) ? \Carbon\Carbon::parse ($project->end_date)->format('d/m/Y') : '') }}" tabindex="7">
-                            <div class="input-group-append" data-target="#end_date" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                            @if ($errors->has('end_date'))
-                            <span class="text-danger">{{ $errors->first('end_date') }}</span>
-                            @endif
-                        </div>  
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Project Cost</label>
-                        <input type="text" name="project_cost" class="form-control" value="{{ old('project_cost', $project->project_cost ?? '0.00') }}" tabindex="8">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
                         <label>Status</label>
-                        <select name="status" class="form-control" tabindex="9">
+                        <select name="status" class="form-control" tabindex="16">
                              @foreach(['Planned', 'On Going', 'Completed', 'On Hold', 'Cancelled'] as $status)
                                 <option value="{{ $status }}" {{ old('status', $project->status ?? '') == $status ? 'selected' : '' }}>{{ $status }}</option>
                             @endforeach
@@ -169,11 +217,33 @@
             </div>
         </div>
         <div class="card-footer" align="center">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="10"><i class="fas fa-save"></i> Save</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="17"><i class="fas fa-save"></i> Save</button>
              <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="11"><i class="fas fa-undo-alt"></i> Reset</button>
         </div>
     </form>
 </div>
+@endsection
+@section('styles')
+<style>
+.group-box {
+    border: 1px solid #c0c1c5;
+    border-radius: 8px;
+    padding: 18px 15px 10px;
+    position: relative;
+    background: #ffffff;
+    margin-top: 12px;
+}
+
+.group-box .group-title {
+    position: absolute;
+    top: -12px;
+    left: 15px;
+    background: #ffffff;
+    padding: 0 8px;
+    color: #000000;
+}
+
+</style>
 @endsection
 
 @section('scripts')

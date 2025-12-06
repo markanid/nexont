@@ -21,6 +21,7 @@
 
   <!-- Theme style -->
   <link rel="stylesheet" href="{{asset('admin-assets/dist/css/adminlte.min.css')}}">
+  @yield('styles')
 
   <!-- SweetAlert2 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4/bootstrap-4.min.css" />
