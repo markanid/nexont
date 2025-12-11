@@ -35,7 +35,7 @@ class CompanyController extends Controller
             'phone'     => 'nullable|string|max:15',
             'email'     => 'nullable|email',
             'website'   => 'nullable|string|max:255',
-            'type'      => 'nullable|string|max:255',
+            'type'      => 'required|string|max:255',
             'client_id' => $request->type === 'client' ? 'required|string|max:255' : 'nullable|string|max:255',
             'logo_path' => 'nullable|image|mimes:jpg,png,jpeg|max:300000' 
         ]);
