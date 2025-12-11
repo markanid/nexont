@@ -24,7 +24,7 @@
     <div class="card-header">
         <h3 class="card-title"><i class="far fa-building"></i> {{$page_title}}</h3>
         <a class="btn btn-dark btn-sm btn-flat float-right" href="{{route('companies.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
-        @if ($errors->any())
+        {{-- @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
                     @foreach ($errors->all() as $error)
@@ -32,7 +32,7 @@
                     @endforeach
                 </ul>
             </div>
-        @endif
+        @endif --}}
     </div>
 
     <form id="EditCompany" method="post" action="{{ route('companies.update') }}" enctype="multipart/form-data">
@@ -77,7 +77,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>Type</label>
+                        <label>Type<sup>*</sup></label>
                         <select name="type" id="type" tabindex="6" class="form-control">
                             <option value="">Select Type</option>
                             <option value="company" {{ !empty($company->type) && $company->type == 'company' ? 'selected' : '' }}>Company</option>
