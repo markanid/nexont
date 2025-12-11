@@ -46,7 +46,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>NexonT Project ID <sup>*</sup></label>
+                        <label>Nexont Project ID <sup>*</sup></label>
                         <input type="text" name="project_id" id="project_id" class="form-control" value="{{ old('project_id', $project->project_id ?? $project_id) }}" readonly>
                     </div>
                 </div>
@@ -92,12 +92,12 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>NexonT PM <sup>*</sup></label>
+                        <label>Nexont PM <sup>*</sup></label>
                         <select name="project_manager_id" id="project_manager_id" class="form-control" tabindex="4">
                             <option value="">-- Select Project-Manager --</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}" {{ old('project_manager_id', $project->project_manager_id ?? '') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }}
+                            @foreach($pms as $project_manager)
+                                <option value="{{ $project_manager->id }}" {{ old('project_manager_id', $project_manager->project_manager_id ?? '') == $project_manager->id ? 'selected' : '' }}>
+                                    {{ $project_manager->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -111,9 +111,9 @@
                         <label>Sales Manager <sup>*</sup></label>
                         <select name="sales_manager_id" id="sales_manager_id" class="form-control" tabindex="5">
                             <option value="">-- Select Sales-Manager --</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}" {{ old('sales_manager_id', $project->sales_manager_id ?? '') == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }}
+                            @foreach($sms as $sales_manager)
+                                <option value="{{ $sales_manager->id }}" {{ old('sales_manager_id', $sales_manager->sales_manager_id ?? '') == $sales_manager->id ? 'selected' : '' }}>
+                                    {{ $sales_manager->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -125,7 +125,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Client Project ID</label>
-                        <input type="text" name="project_cid" id="project_cid" class="form-control" value="{{ old('project_cid', $project->project_cid ?? '0.00') }}" tabindex="6">
+                        <input type="text" name="project_cid" id="project_cid" class="form-control" value="{{ old('project_cid', $project->project_cid ?? '') }}" tabindex="6">
                     </div>
                 </div>
                 <div class="col-md-4">

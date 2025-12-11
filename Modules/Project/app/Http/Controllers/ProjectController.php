@@ -26,9 +26,10 @@ class ProjectController extends Controller
         $data['title']      = "Projects";
         $data['project']    = $project;
         $data['project_id'] = $id ? $project->project_id : Project::getProjectID();
-        $data['companies']  = Company::all();
+        $data['companies']  = Company::where('type', 'client')->get();
         $data['clients']    = User::where('role', 'Client')->get();
-        $data['users']      = User::where('role', '!=', 'Client')->get();
+        $data['pms']        = User::where('role', 'Project Manager')->get();
+        $data['sms']        = User::where('role', 'Sales Manager')->get();
         $data['currencies'] = config('currencies.list');
         return view('project::projects.create', $data);
     }
