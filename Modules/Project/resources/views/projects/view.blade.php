@@ -63,20 +63,64 @@
                         <td>{{ $project->salesManager->name ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <td>Start Date</td>
-                        <td>{{ $project->start_date ? $project->start_date->format('d/m/Y') : '-' }}</td>
+                        <td>Client Project ID</td>
+                        <td>{{ $project->project_cid ?? '-' }}</td>
                     </tr>
                     <tr>
-                        <td>End Date</td>
-                        <td>{{ $project->end_date ? $project->end_date->format('d/m/Y') : '-' }}</td>
-                    </tr>
-                    <tr>
-                        <td>Project Cost</td>
-                        <td>QAR {{ number_format($project->project_cost, 2) }}</td>
+                        <td>Purchase Order# </td>
+                        <td>{{ $project->po ?? '-' }}</td>
                     </tr>
                     <tr>
                         <td>Status</td>
                         <td>{{ $project->status }}</td>
+                    </tr>
+
+                    {{-- ========================================================== --}}
+                    {{--            APPROVAL SCHEDULE (Weeks)                     --}}
+                    {{-- ========================================================== --}}
+                    <tr>
+                        <td>Main Steel (Approval)</td>
+                        <td>{{ $project->apr_main_steel ?? '-' }} weeks</td>
+                    </tr>
+
+                    <tr>
+                        <td>Misc Steel (Approval)</td>
+                        <td>{{ $project->apr_misc_steel ?? '-' }} weeks</td>
+                    </tr>
+
+                    {{-- ========================================================== --}}
+                    {{--                     PO VALUE                             --}}
+                    {{-- ========================================================== --}}
+                    <tr>
+                        <td>PO Main SD</td>
+                        <td>{{ ($project->po_currency ?? '') . ' ' . number_format($project->po_main_sd ?? 0, 2) }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>PO Misc SD</td>
+                        <td>{{ ($project->po_currency ?? '') . ' ' . number_format($project->po_misc_sd ?? 0, 2) }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>PO Engineering</td>
+                        <td>{{ ($project->po_currency ?? '') . ' ' . number_format($project->po_engineering ?? 0, 2) }}</td>
+                    </tr>
+
+                    {{-- ========================================================== --}}
+                    {{--                     OTHER VALUES                         --}}
+                    {{-- ========================================================== --}}
+                    <tr>
+                        <td>Kitty Value</td>
+                        <td>{{ ($project->po_currency ?? '') . ' ' . number_format($project->kitty ?? 0, 2) }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Change Order Value</td>
+                        <td>{{ ($project->po_currency ?? '') . ' ' . number_format($project->covalue ?? 0, 2) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Start Date</td>
+                        <td>{{ $project->start_date ? $project->start_date->format('d/m/Y') : '-' }}</td>
                     </tr>
                 </tbody>
             </table>
