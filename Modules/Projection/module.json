@@ -1,0 +1,11 @@
+{
+    "name": "Projection",
+    "alias": "projection",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Projection\\app\\Providers\\ProjectionServiceProvider"
+    ],
+    "files": []
+}

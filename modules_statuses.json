@@ -1,5 +1,6 @@
 {
     "Master": true,
     "Member": true,
-    "Project": true
+    "Project": true,
+    "Projection": true
 }

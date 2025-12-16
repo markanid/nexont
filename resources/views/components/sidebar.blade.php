@@ -37,6 +37,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('projections.index') }}" class="nav-link {{ menuActive(['projections.index', 'projections.create', 'projections.edit', 'projections.show'], 'active') }}">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <p>Projections</p>
+                    </a>
+                </li>
+
                 <!-- Master Menu -->
                 @if(auth()->user()->role != 'Client')
                 <li class="nav-item {{ menuActive(['companies.index', 'companies.edit', 'companies.create', 'companies.show', 'users.index', 'users.create', 'users.edit', 'users.show', 'employees.index', 'employees.edit', 'employees.create', 'employees.show', 'vendors.index', 'vendors.create', 'vendors.edit', 'vendors.show'], 'menu-open') }}">
