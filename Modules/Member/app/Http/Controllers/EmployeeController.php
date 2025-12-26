@@ -38,14 +38,14 @@ class EmployeeController extends Controller
         $rules = [
             'employee_code'      => 'required|string|max:255|unique:employees,employee_code,' . $request->id,
             'name'               => 'required|string|max:255',
-            'gender'             => 'required|in:Male,Female,Other',
-            'date_of_birth'      => 'required|date',
+            'gender'             => 'nullable|in:Male,Female,Other',
+            'date_of_birth'      => 'nullable|date',
             'phone'              => 'nullable|string|max:20',
             'email'              => 'nullable|email|max:255',
             'address'            => 'nullable|string|max:500',
             'designation'        => 'nullable|string|max:255',
-            'joining_date'       => 'required|date',
-            'status'             => 'required|in:Active,Inactive',
+            'joining_date'       => 'nullable|date',
+            'status'             => 'nullable|in:Active,Inactive',
             'image'              => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
         $validated = $request->validate($rules);

@@ -33,6 +33,13 @@
             <a class="btn btn-dark btn-sm btn-flat float-right" href="{{ route('users.index') }}">
                 <i class="fas fa-arrow-alt-circle-left"></i> Back
             </a>
+             @if ($errors->any())
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    toastr.error(`{!! implode('<br>', $errors->all()) !!}`, 'Validation Error');
+                });
+            </script>
+        @endif
         @endif
     </div>
 

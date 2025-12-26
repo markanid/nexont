@@ -25,13 +25,11 @@
         <h3 class="card-title"><i class="fas fa-user-tag"></i> {{$page_title}}</h3>
         <a class="btn btn-dark btn-sm btn-flat float-right" href="{{route('employees.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
         @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    toastr.error(`{!! implode('<br>', $errors->all()) !!}`, 'Validation Error');
+                });
+            </script>
         @endif
     </div>
 </div>

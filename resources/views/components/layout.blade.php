@@ -26,6 +26,9 @@
   <!-- SweetAlert2 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4/bootstrap-4.min.css" />
 
+  <!-- Toaster -->
+  <link rel="stylesheet" href="{{ asset('admin-assets/plugins/toastr/toastr.min.css') }}">
+
     <!-- DataTables -->
   <link rel="stylesheet" href="{{asset('admin-assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('admin-assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
@@ -212,6 +215,9 @@
 <!-- SweetAlert2 again (optional if you want the separate local version replaced too) -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+{{-- Toaster --}}
+<script src="{{ asset('admin-assets/plugins/toastr/toastr.min.js') }}"></script>
+
 <!-- jQuery Validate -->
 <script src="{{asset('admin-assets/dist/js/jquery.validate.min.js')}}"></script>
 
@@ -239,6 +245,14 @@
     $.extend(true, $.fn.dataTable.defaults, {
         ordering: false
     });
+</script>
+<script>
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "timeOut": "4000",
+        "positionClass": "toast-top-right"
+    };
 </script>
 </body>
 </html>
