@@ -90,12 +90,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Address</label>
-                        <textarea name="address" class="form-control" rows="2" tabindex="6">{{ old('address', $employee->address ?? '') }}</textarea>
-                    </div>
-                </div>
+                
 
                 <div class="col-md-4">
                     <div class="form-group">
@@ -123,6 +118,12 @@
                         </select>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea name="address" class="form-control" rows="2" tabindex="6">{{ old('address', $employee->address ?? '') }}</textarea>
+                    </div>
+                </div>
 
                 <div class="col-md-6">
 					<div class="form-group">
@@ -142,6 +143,7 @@
                         </div><br>
 					</div>
 				</div>
+
             </div>
         </div>
         <div class="card-footer" align="center">

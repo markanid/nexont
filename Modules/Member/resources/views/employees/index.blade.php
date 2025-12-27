@@ -31,7 +31,7 @@
             </div>
             <div class="card">
                 <div class="card-body table-responsive">
-                    <table id="employee_table" class="table table-hover text-nowrap">
+                    <table id="employee_table" class="table table-bordered text-nowrap">
                         <thead>
                             <tr>
                                 <th>SNo</th>
