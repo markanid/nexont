@@ -21,4 +21,9 @@ class Projection extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function runningProjects()
+    {
+        return $this->hasMany(RunningProject::class, 'projection_id', 'id');
+    }
 }

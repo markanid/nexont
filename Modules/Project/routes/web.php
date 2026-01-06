@@ -19,4 +19,7 @@ Route::group(['middleware'=>'auth'],function(){
         Route::post("$resource/payment", [$controller, 'payment'])->name("$resource.payment");
     }
 
+    Route::get('/projects/{id}/details', [ProjectController::class, 'details'])
+    ->name('projects.details');
+
 });

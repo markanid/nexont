@@ -41,7 +41,7 @@ class ProjectController extends Controller
         ]);
 
         $rules = [
-            'project_id'        => 'required|string|max:255|unique:projects,project_id,' . $request->id,
+            'project_code'      => 'required|string|max:255|unique:projects,project_code,' . $request->id,
             'project_name'      => 'required|string|max:255',
             'company_id'        => 'required|exists:companies,id',
             'client_id'         => 'required|exists:users,id',
@@ -90,5 +90,16 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $project->delete();
         return redirect()->route('projects.index')->with('success', 'Record deleted successfully');
+    }
+    
+    public function details($id)
+    {
+        $project = Project::with(['client'])->findOrFail($id);
+        return response()->json([
+            'project_name' => $project->project_name,
+            'project_code' => $project->project_code,
+            'client'       => $project->client->name,
+            'po'           => $project->po,
+        ]);
     }
 }

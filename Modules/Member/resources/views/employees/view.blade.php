@@ -57,14 +57,6 @@
                         <td>{{ $employee->name }}</td>
                     </tr>
                     <tr>
-                        <td>Gender</td>
-                        <td>{{ $employee->gender }}</td>
-                    </tr>
-                    <tr>
-                        <td>Date of Birth</td>
-                        <td>{{ \Carbon\Carbon::parse($employee->date_of_birth)->format('d/m/Y') }}</td>
-                    </tr>
-                    <tr>
                         <td>Phone</td>
                         <td>{{ $employee->phone }}</td>
                     </tr>
@@ -73,16 +65,8 @@
                         <td>{{ $employee->email }}</td>
                     </tr>
                     <tr>
-                        <td>Address</td>
-                        <td style="white-space: pre-line;">{{ $employee->address }}</td>
-                    </tr>
-                    <tr>
                         <td>Designation</td>
                         <td>{{ $employee->designation }}</td>
-                    </tr>
-                    <tr>
-                        <td>Joining Date</td>
-                        <td>{{ \Carbon\Carbon::parse($employee->joining_date)->format('d/m/Y') }}</td>
                     </tr>
                     <tr>
                         <td>Status</td>

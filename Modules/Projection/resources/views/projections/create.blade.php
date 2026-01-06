@@ -24,15 +24,13 @@
     <div class="card-header">
         <h3 class="card-title"><i class="fas fa-chart-line"></i> {{$page_title}}</h3>
         <a class="btn btn-dark btn-sm btn-flat float-right" href="{{route('projections.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
-        {{-- @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif --}}
+        @if ($errors->any())
+            <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    toastr.error(`{!! implode('<br>', $errors->all()) !!}`, 'Validation Error');
+                });
+            </script>
+        @endif
     </div>
 </div>
 <div class="card card-navy">
@@ -42,6 +40,7 @@
     <form id="EmployeeForm" method="post" action="{{ route('projections.update') }}" enctype="multipart/form-data">
     @csrf
         <input type="hidden" name="id" value="{{ $projection->id ?? '' }}">
+        <input type="hidden" name="created_by" value="{{ $projection->created_by ?? auth()->id() }}">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">

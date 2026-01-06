@@ -30,21 +30,12 @@ class EmployeeController extends Controller
 
     public function storeOrUpdate(Request $request)
     {
-        $request->merge([
-            'date_of_birth' => $request->date_of_birth ? Carbon::createFromFormat('d/m/Y', $request->date_of_birth)->format('Y-m-d') : null,
-            'joining_date'  => $request->joining_date ? Carbon::createFromFormat('d/m/Y', $request->joining_date)->format('Y-m-d') : null,
-        ]);
-
         $rules = [
             'employee_code'      => 'required|string|max:255|unique:employees,employee_code,' . $request->id,
             'name'               => 'required|string|max:255',
-            'gender'             => 'nullable|in:Male,Female,Other',
-            'date_of_birth'      => 'nullable|date',
             'phone'              => 'nullable|string|max:20',
             'email'              => 'nullable|email|max:255',
-            'address'            => 'nullable|string|max:500',
             'designation'        => 'nullable|string|max:255',
-            'joining_date'       => 'nullable|date',
             'status'             => 'nullable|in:Active,Inactive',
             'image'              => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];

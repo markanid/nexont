@@ -56,89 +56,45 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Gender</label>
-                        <select name="gender" class="form-control" tabindex="2">
-                            <option value="">-- Select --</option>
-                            <option value="Male" {{ old('gender', $employee->gender ?? '') == 'Male' ? 'selected' : '' }}>Male</option>
-                            <option value="Female" {{ old('gender', $employee->gender ?? '') == 'Female' ? 'selected' : '' }}>Female</option>
-                            <option value="Other" {{ old('gender', $employee->gender ?? '') == 'Other' ? 'selected' : '' }}>Other</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Date of Birth</label>
-                        <div class="input-group date" id="date_of_birth" data-target-input="nearest">
-                            <input type="text" name="date_of_birth" class="form-control" value="{{ old('date_of_birth', isset($employee->date_of_birth) ? \Carbon\Carbon::parse ($employee->date_of_birth)->format('d/m/Y') : '') }}" tabindex="3">
-                            <div class="input-group-append" data-target="#date_of_birth" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
                         <label>Phone</label>
-                        <input type="text" name="phone" class="form-control" value="{{ old('phone', $employee->phone ?? '') }}" tabindex="4">
+                        <input type="text" name="phone" class="form-control" value="{{ old('phone', $employee->phone ?? '') }}" tabindex="2">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" name="email" class="form-control" value="{{ old('email', $employee->email ?? '') }}" tabindex="5">
+                        <input type="email" name="email" class="form-control" value="{{ old('email', $employee->email ?? '') }}" tabindex="3">
                     </div>
                 </div>
-
-                
-
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Designation</label>
-                        <input type="text" name="designation" class="form-control" value="{{ old('designation', $employee->designation ?? '') }}" tabindex="7">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Joining Date</label>
-                        <div class="input-group date" id="joining_date" data-target-input="nearest">
-                            <input type="text" name="joining_date" class="form-control" value="{{ old('joining_date', isset($employee->joining_date) ? \Carbon\Carbon::parse ($employee->joining_date)->format('d/m/Y') : '') }}" tabindex="8">
-                            <div class="input-group-append" data-target="#joining_date" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+                        <input type="text" name="designation" class="form-control" value="{{ old('designation', $employee->designation ?? '') }}" tabindex="4">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Status</label>
-                        <select name="status" class="form-control" tabindex="9">
+                        <select name="status" class="form-control" tabindex="5">
                             <option value="Active" {{ old('status', $employee->status ?? '') == 'Active' ? 'selected' : '' }}>Active</option>
                             <option value="Inactive" {{ old('status', $employee->status ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label>Address</label>
-                        <textarea name="address" class="form-control" rows="2" tabindex="6">{{ old('address', $employee->address ?? '') }}</textarea>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
 					<div class="form-group">
-						<label for="customFile">Image(200 X 50)</label>
+						<label for="customFile">Image(150x150)</label>
                         	<div class="input-group">
 							<div class="custom-file">
-                                <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" tabindex="10">
+                                <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" tabindex="6">
                                 <label class="custom-file-label" for="customFile">Choose file</label>
 							</div>
                         </div>
 						<div id="photo_preview" class="mt-2">
 						    @if(!empty($employee->image))
-						        <img src="{{asset('storage/employee_logos/'.$employee->image)}}" alt="Customer Photo" style="width: 200px; height: 100px;">
+						        <img src="{{ asset('storage/employee_logos/'.$employee->image) }}" alt="Employee Photo" style="width: 150px; height: 150px;">
 						    @else
-                                <img src="{{asset('uploads/avatar.png')}}" alt="Employee Photo" style="width: 200px; height: 50px;">
+                                <img src="{{asset('uploads/avatar.png')}}" alt="Employee Photo" style="width: 150px; height: 150px;">
                             @endif
                         </div><br>
 					</div>
@@ -147,8 +103,8 @@
             </div>
         </div>
         <div class="card-footer" align="center">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="11"><i class="fas fa-save"></i> Save</button>
-             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="12"><i class="fas fa-undo-alt"></i> Reset</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="7"><i class="fas fa-save"></i> Save</button>
+             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="8"><i class="fas fa-undo-alt"></i> Reset</button>
         </div>
     </form>
 </div>
@@ -176,12 +132,6 @@ $(function () {
             $('#submitBtn').prop('disabled', true); // Disable the submit button
             form.submit();
         }
-    });
-    $('#date_of_birth').datetimepicker({
-        format: 'DD/MM/YYYY'
-    });
-    $('#joining_date').datetimepicker({
-        format: 'DD/MM/YYYY'
     });
 });
 </script>

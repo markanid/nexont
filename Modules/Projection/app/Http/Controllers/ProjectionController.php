@@ -5,7 +5,9 @@ namespace Modules\Projection\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Modules\Project\app\Models\Project;
 use Modules\Projection\app\Models\Projection;
+use Modules\Projection\app\Models\RunningProject;
 
 class ProjectionController extends Controller
 {
@@ -33,8 +35,9 @@ class ProjectionController extends Controller
     {
 
         $rules = [
-            'month' => 'required|string',
-            'year'  => 'required|string',
+            'month'     => 'required|string',
+            'year'      => 'required|string',
+            'created_by'=> 'required|integer|exists:users,id',
         ];
         $validated = $request->validate($rules);
         $isNew = empty($request->id);
@@ -55,9 +58,10 @@ class ProjectionController extends Controller
     
     public function show($id)
     {
-        $data['title']      = "Projections";
-        $data['page_title'] = "Projection Details";
-        $data['projection'] = Projection::findOrFail($id);
+        $data['title']              = "Projections";
+        $data['page_title']         = "Projection Details";
+        $data['projection']         = Projection::findOrFail($id);
+        $data['running_projects']   = RunningProject::with(['project.client'])->where('projection_id', $id)->get();
         return view('projection::projections.view', $data);
     }
 
