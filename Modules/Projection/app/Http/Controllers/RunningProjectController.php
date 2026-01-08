@@ -47,11 +47,15 @@ class RunningProjectController extends Controller
             ['id' => $request->id],
             $validated
         );
-    
+        
         if ($projectiondetail) {
-            return $isNew
-                ? redirect()->route('projections.show', $projectiondetail->projection_id)->with('success', 'Running project created successfully.')
-                : redirect()->route('projections.show', $projectiondetail->projection_id)->with('success', 'Running project updated successfully.');
+            return redirect()
+                ->route('projections.show', $projectiondetail->projection_id)
+                ->with('success', $isNew
+                    ? 'Running project created successfully.'
+                    : 'Running project updated successfully.'
+                )
+                ->withFragment('custom-tabs-one-profile');
         } else {
             return redirect()->back()->with('error', 'Failed to update running project.');
         }

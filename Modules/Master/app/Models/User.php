@@ -13,6 +13,7 @@ use Modules\Estimation\app\Models\Estimation;
 use Modules\Finance\app\Models\Expense;
 use Modules\Project\app\Models\Project;
 use Modules\Projection\app\Models\Projection;
+use Modules\Projection\app\Models\RunningProject;
 use Modules\Purchase\app\Models\Purchase;
 use Modules\Returns\app\Models\Returns;
 use Modules\Sale\app\Models\Sale;
@@ -50,5 +51,10 @@ class User extends Model
     public function projections()
     {
         return $this->hasMany(Projection::class, 'created_by');
+    }
+
+    public function runningProjects()
+    {
+        return $this->hasMany(RunningProject::class, 'created_by', 'id');
     }
 }

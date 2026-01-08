@@ -19,7 +19,7 @@ Route::group(['middleware'=>'auth'],function(){
         Route::post("$resource/update", [$controller, 'storeOrUpdate'])->name("$resource.update");
         Route::get("$resource/delete/{id}", [$controller, 'destroy'])->name("$resource.delete")->middleware('role:PMO,Admin');
 
-        Route::get("$resource/adddetails/{id}", [$controller, 'adddetails'])->name("$resource.adddetails");
+        Route::get("$resource/adddetails/{id}", [$controller, 'adddetails'])->name("$resource.adddetails")->middleware('role:Project Manager');
     }
 
 });

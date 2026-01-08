@@ -23,8 +23,8 @@ return new class extends Migration
             $table->enum('status', ['Completed', 'In Progress'])->default('In Progress');
             $table->string('remarks')->nullable();
             $table->string('invoice_details')->nullable();
-            $table->unsignedBigInteger('created_by');
-            $table->foreign('created_by')->references('id')->on('users');
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
         });
     }

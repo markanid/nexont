@@ -5,6 +5,8 @@ namespace Modules\Projection\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Modules\Project\app\Models\Project;
 use Modules\Projection\app\Models\Projection;
 use Modules\Projection\app\Models\RunningProject;
@@ -61,7 +63,8 @@ class ProjectionController extends Controller
         $data['title']              = "Projections";
         $data['page_title']         = "Projection Details";
         $data['projection']         = Projection::findOrFail($id);
-        $data['running_projects']   = RunningProject::with(['project.client'])->where('projection_id', $id)->get();
+        $data['running_projects']   = RunningProject::with(['project.client'])->where('projection_id', $id)->where('created_by', Auth::id())->get();
+        $data['projection_summary'] = RunningProject::select('created_by',DB::raw('SUM(projection_value)as total_projection'))->where('projection_id', $id)->groupBy('created_by')->with('creator')->get();
         return view('projection::projections.view', $data);
     }
 
