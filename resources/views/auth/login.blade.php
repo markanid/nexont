@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NexonT | Log in</title>
+  <title>Nexont | Log in</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="{{asset('admin-assets/dist/css/adminlte.min.css')}}">
   <link rel="shortcut icon" type="image/x-icon" href="{{asset('admin-assets/dist/img/favicon.png')}}">
 </head>
-<body class="hold-transition login-page">
+<body class="hold-transition login-page dark-mode">
 <div class="login-box">
  
   <!-- /.login-logo -->

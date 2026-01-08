@@ -51,12 +51,12 @@
   </style>
 </head>
 {{-- <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed layout-navbar-fixed"> --}}
-<body class="sidebar-mini layout-navbar-fixed layout-fixed layout-footer-fixed">
+<body class="sidebar-mini layout-navbar-fixed layout-fixed layout-footer-fixed dark-mode">
 <div class="wrapper">
 
   <!-- Preloader -->
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav class="main-header navbar navbar-expand navbar-dark">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -254,5 +254,6 @@
         "positionClass": "toast-top-right"
     };
 </script>
+@stack('scripts')
 </body>
 </html>

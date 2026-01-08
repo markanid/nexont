@@ -12,7 +12,7 @@
 
 @endphp
 
-<aside class="main-sidebar elevation-4 sidebar-light-navy">
+<aside class="main-sidebar elevation-4 sidebar-dark-navy">
     <!-- Brand Logo -->
     <a href="#" class="brand-link">
         <img src="{{asset('admin-assets/dist/img/PNG.png')}}" alt="Logo" class="brand-image" style="width: 230px; height: auto; display: block; margin: 0; padding: 1px;">
