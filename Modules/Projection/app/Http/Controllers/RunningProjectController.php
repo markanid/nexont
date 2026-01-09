@@ -17,12 +17,21 @@ class RunningProjectController extends Controller
         return view('projection::index');
     }
 
-    public function adddetails($id = null)
+    public function addOrEdit($id = null)
     {
         $data['page_title']     = $id ? "Create Running Project" : "Create Running Project";
         $data['title']          = "Running Project";
         $data['projects']       = Project::all();
-        $data['projection_id']  = $id;
+        if ($id) {
+            // EDIT
+            $data['runningProject'] = RunningProject::findOrFail($id);
+            $data['projection_id']  = $data['runningProject']->projection_id;
+        } else {
+            // CREATE
+            $data['runningProject'] = null;
+            $data['projection_id']  = request()->get('projection_id');
+        }
+    
         return view('projection::runningprojects.create',$data);
     }
 
@@ -61,29 +70,10 @@ class RunningProjectController extends Controller
         }
     }
 
-    /**
-     * Show the specified resource.
-     */
-    public function show($id)
+    public function delete($id)
     {
-        return view('projection::show');
+        $runningProject = RunningProject::findOrFail($id);
+        $runningProject->delete();
+        return redirect()->route('projections.show', $runningProject->projection_id)->with('success', 'Record deleted successfully');
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
-    {
-        return view('projection::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id) {}
 }

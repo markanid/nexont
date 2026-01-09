@@ -74,4 +74,16 @@ class ProjectionController extends Controller
         $projection->delete();
         return redirect()->route('projections.index')->with('success', 'Record deleted successfully');
     }
+
+    public function filterRunningProjects(Request $request, $projectionId)
+    {
+        $query = RunningProject::with(['project.client'])
+            ->where('projection_id', $projectionId);
+
+        if ($request->created_by) {
+            $query->where('created_by', $request->created_by);
+        }
+
+        return response()->json($query->get());
+    }
 }

@@ -36,7 +36,9 @@
                             <tr>
                                 <th>SNo</th>
                                 <th>Projection</th>
-                                <th>Options</th> 
+                                @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+                                    <th>Options</th> 
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -44,10 +46,12 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td><a href="{{route('projections.show', $projection->id)}}">{{$projection->month.'-'.$projection->year}}</a></td>
-                                    <td>
-                                    <a class="btn btn-app" href="{{route('projections.edit', $projection->id)}}"><i class="far fa-edit"></i></a>
-                                    <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('projections.delete', ['id' => $projection->id]) }}"><i class="far fa-trash-alt"></i></a>
-                                    </td>
+                                    @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+                                        <td>
+                                        <a class="btn btn-app" href="{{route('projections.edit', $projection->id)}}"><i class="far fa-edit"></i></a>
+                                        <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('projections.delete', ['id' => $projection->id]) }}"><i class="far fa-trash-alt"></i></a>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>

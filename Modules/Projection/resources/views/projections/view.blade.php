@@ -22,7 +22,9 @@
    <div class="card-header">
       <h3 class="card-title"><i class="fas fa-user-tag"></i> {{ $page_title }}</h3>
       <div class="card-tools">
-         <a href="{{ route('projections.edit', $projection->id) }}" class="btn btn-success btn-sm btn-flat"><i class="fas fa-edit"></i> Edit</a>
+         @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+            <a href="{{ route('projections.edit', $projection->id) }}" class="btn btn-success btn-sm btn-flat"><i class="fas fa-edit"></i> Edit</a>
+         @endif
          <a href="{{ route('projections.index') }}" class="btn btn-dark btn-sm btn-flat"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
       </div>
    </div>
@@ -56,39 +58,44 @@
                      </tr>
                   </tbody>
                </table>
-               <div class="mt-3">
-                  <h5 class="mb-2"><strong>Projection Summary (User-wise)</strong></h5>
+               @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+                  <div class="mt-3">
+                     <h5 class="mb-2"><strong>Projection Summary (User-wise)</strong></h5>
 
-                  <div class="table-responsive">
-                      <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                              <th>#</th>
-                              <th>User</th>
-                              <th>Total Projection</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($projection_summary as $summary)
+                     <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                           <thead>
                               <tr>
-                                  <td>{{ $loop->iteration }}</td>
-                                  <td>{{ $summary->creator->name ?? 'N/A' }}</td>
-                                  <td>{{ number_format($summary->total_projection, 2) }}</td>
+                                 <th>#</th>
+                                 <th>User</th>
+                                 <th>Total Projection</th>
+                                 <th>View Details</th>
                               </tr>
-                            @empty
-                              <tr>
-                                  <td colspan="3" class="text-center">No data available</td>
-                              </tr>
-                            @endforelse
-                        </tbody>
-                      </table>
+                           </thead>
+                           <tbody>
+                              @forelse($projection_summary as $summary)
+                                 <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $summary->creator->name ?? 'N/A' }}</td>
+                                    <td>{{ number_format($summary->total_projection, 2) }}</td>
+                                    <td>
+                                       <a class="btn btn-app view-user-projects" data-user="{{ $summary->created_by }}"><i class="far fa-eye"></i></a>
+                                    </td>
+                                 </tr>
+                              @empty
+                                 <tr>
+                                    <td colspan="3" class="text-center">No data available</td>
+                                 </tr>
+                              @endforelse
+                           </tbody>
+                        </table>
+                     </div>
                   </div>
-                </div>
-
+               @endif
             </div>
          </div>
          <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
-            <a class="btn btn-primary btn-sm btn-flat float-right" href="{{ route('runningprojects.adddetails', $projection->id) }}"><i class="fas fa-plus-circle"></i> Create</a>
+            <a class="btn btn-primary btn-sm btn-flat float-right" href="{{ route('runningprojects.adddetails', ['projection_id' => $projection->id]) }}"><i class="fas fa-plus-circle"></i> Create</a>
             <br>  <br>
             <div class="card">
                <div class="card-body">
@@ -107,6 +114,7 @@
                               <th>Remarks</th>
                               <th>PO Details</th>
                               <th>Invoice Details</th>
+                              <th>Options</th>
                            </tr>
                         </thead>
                         <tbody>
@@ -123,6 +131,10 @@
                               <td>{{ $running_project->remarks }}</td>
                               <td>{{ $running_project->project->po}}</td>
                               <td>{{ $running_project->invoice_details }}</td>
+                              <td>
+                                 <a class="btn btn-app" href="{{route('runningprojects.editdetails', $running_project->id)}}"><i class="far fa-edit"></i></a>
+                                 <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('runningprojects.deletedetails', ['id' => $running_project->id]) }}"><i class="far fa-trash-alt"></i></a>
+                              </td>
                            </tr>
                            @endforeach
                         </tbody>
@@ -154,5 +166,63 @@
        }
    });
 </script>
+<script>
+$(document).ready(function() {
+    $('.view-user-projects').on('click', function() {
+        let userId = $(this).data('user');
+        let projectionId = {{ $projection->id }};
+
+        $.ajax({
+            url: "{{ route('projections.runningprojects.filter', $projection->id) }}",
+            data: { created_by: userId },
+            success: function(res) {
+                let tbody = '';
+                let i = 1;
+
+                if(res.length === 0) {
+                    tbody = `<tr>
+                        <td colspan="12" class="text-center">No running projects found</td>
+                    </tr>`;
+                } else {
+                    res.forEach(function(row) {
+                        tbody += `
+                        <tr>
+                            <td>${i++}</td>
+                            <td>${row.project.project_code}</td>
+                            <td>${row.project.project_name}</td>
+                            <td>${row.project.client.name}</td>
+                            <td>${row.projection_value}</td>
+                            <td>${row.type}</td>
+                            <td>${row.billing_desc ?? ''}</td>
+                            <td>${row.status}</td>
+                            <td>${row.remarks ?? ''}</td>
+                            <td>${row.project.po ?? ''}</td>
+                            <td>${row.invoice_details ?? ''}</td>
+                            <td>
+                                <a class="btn btn-app" href="/runningprojects/editdetails/${row.id}">
+                                    <i class="far fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>`;
+                    });
+                }
+
+                $('#running_projects_table tbody').html(tbody);
+
+                // Optional: Switch to Running Projects tab
+                $('#custom-tabs-one-profile-tab').tab('show');
+            }
+        });
+    });
+});
+</script>
+
 @endpush
+@endsection
+@include('partials.delete-modal')
+
+@section('scripts')
+
+@include('partials.delete-modal-script')
+@include('partials.common-index-script', ['tableId' => 'running_projects_table'])
 @endsection

@@ -40,6 +40,9 @@
     </div>
     <form id="ProjectionForm" method="post" action="{{ route('runningprojects.update') }}" enctype="multipart/form-data">
     @csrf
+        @if($runningProject)
+            <input type="hidden" name="id" value="{{ $runningProject->id }}">
+        @endif
         <input type="hidden" name="projection_id" value="{{ $projection_id  }}">
         <input type="hidden" name="created_by" value="{{ Auth::user()->id }}">
         <div class="card-body">
@@ -50,7 +53,10 @@
                         <select name="project_id" id="project_id" class="form-control" tabindex="1">
                             <option value="">-- Select Project_Id --</option>
                             @foreach($projects as $project)
-                                <option value="{{ $project->id }}">{{ $project->project_code }}</option>
+                                <option value="{{ $project->id }}"
+                                    {{ old('project_id', $runningProject->project_id ?? '') == $project->id ? 'selected' : '' }}>
+                                    {{ $project->project_code }}
+                                </option>
                             @endforeach
                         </select>
                         @if ($errors->has('project_id'))
@@ -64,7 +70,10 @@
                         <select id="project_name" class="form-control" tabindex="2">
                             <option value="">-- Select Project_Name --</option>
                             @foreach($projects as $project)
-                                <option value="{{ $project->id }}">{{ $project->project_name }}</option>
+                                <option value="{{ $project->id }}"
+                                    {{ old('project_id', $runningProject->project_id ?? '') == $project->id ? 'selected' : '' }}>
+                                    {{ $project->project_name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -78,7 +87,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Projection</label>
-                        <input type="text" name="projection_value" class="form-control" tabindex="3">
+                        <input type="text" name="projection_value" class="form-control" value="{{ old('projection_value', $runningProject->projection_value ?? '') }}" tabindex="3">
                         @if ($errors->has('projection_value'))
                           <span class="text-danger">{{ $errors->first('projection_value') }}</span>
                         @endif
@@ -89,15 +98,15 @@
                         <label>Work Type<sup>*</sup></label>
                         <select id="type" name="type" class="form-control" tabindex="4">
                             <option value="">-- Select Status --</option>
-                            <option value="Approval">Approval</option>
-                            <option value="Fabrication">Fabrication</option>
+                            <option value="Approval" {{ old('type', $runningProject->type ?? '') == 'Approval' ? 'selected' : '' }}> Approval </option>
+                            <option value="Fabrication" {{ old('type', $runningProject->type ?? '') == 'Fabrication' ? 'selected' : '' }}> Fabrication </option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Billing Description</label>
-                        <input type="text" id="billing_desc" class="form-control" name="billing_desc" tabindex="5">
+                        <input type="text" id="billing_desc" class="form-control" name="billing_desc" value="{{ old('billing_desc', $runningProject->billing_desc ?? '') }}"  tabindex="5">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -105,15 +114,15 @@
                         <label>Work Status<sup>*</sup></label>
                         <select id="status" name="status" class="form-control" tabindex="6">
                             <option value="">-- Select Status --</option>
-                            <option value="Completed">Completed</option>
-                            <option value="In Progress">In Progress</option>
+                            <option value="Completed" {{ old('status', $runningProject->status ?? '') == 'Completed' ? 'selected' : '' }}> Completed </option>
+                            <option value="In Progress" {{ old('status', $runningProject->status ?? '') == 'In Progress' ? 'selected' : '' }}> In Progress </option>
                         </select>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Remarks</label>
-                        <input type="text" id="remarks" class="form-control" name="remarks" tabindex="7">
+                        <input type="text" id="remarks" class="form-control" name="remarks" value="{{ old('remarks', $runningProject->remarks ?? '') }}" tabindex="7">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -164,13 +173,14 @@ $(function () {
 });
 
 $(document).ready(function () {
-
+    @if($runningProject)
+        loadProjectDetails({{ $runningProject->project_id }});
+    @endif
     function loadProjectDetails(projectId) {
         if (!projectId) return;
 
         // sync both selects
-        $('#project_id').val(projectId);
-        $('#project_name').val(projectId);
+        $('#project_id, #project_name').val(projectId);
 
         $.ajax({
             url: "{{ url('projects') }}/" + projectId + "/details",
@@ -182,11 +192,7 @@ $(document).ready(function () {
         });
     }
 
-    $('#project_id').on('change', function () {
-        loadProjectDetails($(this).val());
-    });
-
-    $('#project_name').on('change', function () {
+    $('#project_id, #project_name').on('change', function () {
         loadProjectDetails($(this).val());
     });
 
