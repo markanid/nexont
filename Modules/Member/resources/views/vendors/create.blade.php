@@ -100,6 +100,44 @@
                     </div>
                 </div>
                 <div class="col-md-6">
+                    <div class="form-group">
+                        <label>W-9 Form<sup>*</sup></label>
+                        <select name="w9_status" id="w9_status" tabindex="9" class="form-control">
+                            <option value="">-- Select --</option>
+                            <option value="no"  {{ (!empty($vendor->w9_status) && $vendor->w9_status == 'no') ? 'selected' : '' }}>No</option>
+                            <option value="yes" {{ (!empty($vendor->w9_status) && $vendor->w9_status == 'yes') ? 'selected' : '' }}>Yes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6 d-none" id="w9_upload_wrapper">
+                    <div class="form-group">
+                        <label>Upload W-9 Form</label>
+                        <input type="file"
+                            name="w9_files[]"
+                            id="w9_files"
+                            class="form-control"
+                            multiple
+                            accept=".pdf,.jpg,.jpeg,.png,.webp">
+
+                        <small class="text-muted">
+                            You can upload multiple files (PDF / Image)
+                        </small>
+
+                        {{-- Existing uploaded files (EDIT mode) --}}
+                        @if(!empty($vendor->w9_files))
+                            <div class="mt-2">
+                                @foreach(json_decode($vendor->w9_files) as $file)
+                                    <a href="{{ asset('storage/vendor_w9/'.$file) }}"
+                                    target="_blank"
+                                    class="badge badge-info mr-1">
+                                        View File
+                                    </a>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-6">
 					<div class="form-group">
 						<label for="customFile">Image(200 X 50)</label>
                         	<div class="input-group">
@@ -150,6 +188,28 @@ $(function () {
             form.submit();
         }
     });
+});
+</script>
+<script>
+$(function () {
+
+    function toggleW9Upload() {
+        if ($('#w9_status').val() === 'yes') {
+            $('#w9_upload_wrapper').removeClass('d-none');
+        } else {
+            $('#w9_upload_wrapper').addClass('d-none');
+            $('#w9_files').val('');
+        }
+    }
+
+    // On page load (EDIT mode)
+    toggleW9Upload();
+
+    // On change
+    $('#w9_status').on('change', function () {
+        toggleW9Upload();
+    });
+
 });
 </script>
 @endsection

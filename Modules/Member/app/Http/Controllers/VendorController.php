@@ -36,6 +36,8 @@ class VendorController extends Controller
             'address'       => 'nullable|string|max:255',
             'website'       => 'nullable|string|max:255',
             'gst_number'    => 'nullable|string|max:255',
+            'w9_status'     => 'required|in:yes,no',
+            'w9_files.*'    => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:2048',
             'logo'          => 'nullable|image|mimes:jpg,png,jpeg|max:300000', 
         ]);
 
@@ -51,7 +53,39 @@ class VendorController extends Controller
             $file->storeAs('vendor_logos', $filename, 'public'); 
             $validated['logo'] = $filename; 
         }  
-          
+
+        $existingFiles = [];
+
+        if ($vendor && $vendor->w9_files) {
+            $existingFiles = json_decode($vendor->w9_files, true) ?? [];
+        }
+
+        if ($request->w9_status === 'no') {
+            foreach ($existingFiles as $file) {
+                if (Storage::disk('public')->exists('vendor_w9/' . $file)) {
+                    Storage::disk('public')->delete('vendor_w9/' . $file);
+                }
+            }
+
+            $validated['w9_files'] = null;
+        }
+
+        if ($request->w9_status === 'yes' && $request->hasFile('w9_files')) {
+
+            foreach ($request->file('w9_files') as $file) {
+                $name = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+                $file->storeAs('vendor_w9', $name, 'public');
+                $existingFiles[] = $name; // ✅ APPEND
+            }
+
+            $validated['w9_files'] = json_encode($existingFiles);
+        }
+
+        /* If W9 = YES but no new upload → keep old files */
+        if ($request->w9_status === 'yes' && !$request->hasFile('w9_files')) {
+            $validated['w9_files'] = json_encode($existingFiles);
+        }
+
         $vendor = Vendor::updateOrCreate(
             ['id' => $request->id ?? null], 
             $validated
@@ -79,6 +113,17 @@ class VendorController extends Controller
         $vendor = Vendor::findOrFail($id);
         if (!empty($vendor->logo) && Storage::disk('public')->exists('vendor_logos/' . $vendor->logo)) {
             Storage::disk('public')->delete('vendor_logos/' . $vendor->logo);
+        }
+        if (!empty($vendor->w9_files)) {
+            $files = json_decode($vendor->w9_files, true);
+
+            if (is_array($files)) {
+                foreach ($files as $file) {
+                    if (Storage::disk('public')->exists('vendor_w9/' . $file)) {
+                        Storage::disk('public')->delete('vendor_w9/' . $file);
+                    }
+                }
+            }
         }
         Storage::delete('public/vendor_logos/' . $vendor->logo);
         $vendor->delete();

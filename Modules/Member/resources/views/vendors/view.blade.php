@@ -78,6 +78,22 @@
                                 <td>Contact No.</td>
                                 <td>{{ $vendor->rep_phone }}</td>
                             </tr>
+                            <tr>
+                                <td>W-9 Files</td>
+                                <td>
+                                    @if($vendor->w9_status === 'yes' && !empty($vendor->w9_files))
+                                        @foreach(json_decode($vendor->w9_files, true) as $file)
+                                            <a href="{{ asset('storage/vendor_w9/'.$file) }}"
+                                            target="_blank"
+                                            class="btn btn-sm btn-outline-info mb-1">
+                                                <i class="fas fa-file"></i> View W-9
+                                            </a>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">Not Provided</span>
+                                    @endif
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

@@ -14,5 +14,5 @@ class Vendor extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['company_name','company_phone', 'email', 'rep_name', 'rep_phone', 'address', 'logo', 'website', 'gst_number', 'status'];
+    protected $fillable = ['company_name','company_phone', 'email', 'rep_name', 'rep_phone', 'address', 'logo', 'website', 'gst_number', 'w9_status', 'w9_files', 'status'];
 }
