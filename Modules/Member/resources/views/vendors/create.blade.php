@@ -74,7 +74,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label>GST No.</label>
+                        <label>EIN No.</label>
                         <input type="text" name="gst_number" id="gst_number" tabindex="5" class="form-control" value="{{ !empty($vendor->gst_number) ? $vendor->gst_number : '' }}">
                     </div>
                 </div>

@@ -236,7 +236,7 @@
     border-radius: 8px;
     padding: 18px 15px 10px;
     position: relative;
-    background: #ffffff;
+    background: #343a40;
     margin-top: 12px;
 }
 
@@ -244,9 +244,9 @@
     position: absolute;
     top: -12px;
     left: 15px;
-    background: #ffffff;
+    background: #343a40;
     padding: 0 8px;
-    color: #000000;
+    color: #ffffff;
 }
 
 </style>

@@ -3655,7 +3655,7 @@ input[type=submit].btn-block {
 .dropdown-item:active {
     color: #fff;
     text-decoration: none;
-    background-color: #007bff
+    background-color: #6c757d
 }
 
 .dropdown-item.disabled,
@@ -21922,8 +21922,8 @@ body.text-sm .control-sidebar {
 }
 
 .dark-mode .page-item.active .page-link {
-    background-color: #3f6791;
-    border-color: #3f6791;
+    background-color: #6c757d;
+    border-color: #6c757d;
     color: #fff
 }
 
@@ -29739,7 +29739,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-primary:not(.card-outline)>.card-header {
-    background-color: #3f6791
+    background-color: #002c59
 }
 
 .dark-mode .card-primary:not(.card-outline)>.card-header,
@@ -29752,7 +29752,7 @@ html.maximized-card {
 }
 
 .dark-mode .card-primary.card-outline {
-    border-top: 3px solid #3f6791
+    border-top: 3px solid #002c59
 }
 
 .dark-mode .card-primary.card-outline-tabs>.card-header a:hover {
@@ -32745,16 +32745,16 @@ html.maximized-card {
 
 .btn-app {
     border-radius: 3px;
-    background-color: #f8f9fa;
-    border: 1px solid #ddd;
-    color: #6c757d;
-    font-size: 12px;
-    height: 60px;
-    margin: 0 0 10px 10px;
-    min-width: 80px;
-    padding: 15px 5px;
-    position: relative;
-    text-align: center
+  /*background-color: #f8f9fa;
+  border: 1px solid #ddd;*/
+  color: #007838;
+  font-size: 12px;
+  height: 40px;
+  margin: 0 0 0px 0px;
+  min-width: 45px;
+  padding: 8px 7px 0px 10px;
+  position: relative;
+  text-align: center;
 }
 
 .btn-app>.fa,
@@ -32774,14 +32774,15 @@ html.maximized-card {
 }
 
 .btn-app:hover {
-    background-color: #f8f9fa;
-    border-color: #aaa;
-    color: #444
+   background-color: #f5f5f4;
+  border-color: #6c757d00;
+  border-radius: 3px;
+  color: #007838;
 }
 
 .btn-app:active,
 .btn-app:focus {
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125)
+    
 }
 
 .btn-app>.badge {
@@ -32791,6 +32792,57 @@ html.maximized-card {
     right: -10px;
     top: -3px
 }
+
+
+.btn-app-delete {
+  border-radius: 3px;
+  /*background-color: #f8f9fa;
+  border: 1px solid #ddd;*/
+  color: #dc2626;
+  font-size: 12px;
+  height: 40px;
+  margin: 0 0 0px 0px;
+  min-width: 45px;
+  padding: 8px 5px 0px 4px;
+  position: relative;
+  text-align: center;
+}
+
+.btn-app-delete > .fa,
+.btn-app-delete > .fas,
+.btn-app-delete > .far,
+.btn-app-delete > .fab,
+.btn-app-delete > .fal,
+.btn-app-delete > .fad,
+.btn-app-delete > .svg-inline--fa,
+.btn-app-delete > .ion {
+  display: block;
+  font-size: 20px;
+}
+
+.btn-app-delete > .svg-inline--fa {
+  margin: 0 auto;
+}
+
+.btn-app-delete:hover {
+  background-color: #f5f5f4;
+  border-color: #6c757d00;
+  border-radius: 3px;
+  color: #dc2626;
+}
+
+.btn-app-delete:active, .btn-app-delete:focus {
+  
+}
+
+.btn-app-delete > .badge {
+  font-size: 10px;
+  font-weight: 400;
+  position: absolute;
+  right: -10px;
+  top: -3px;
+}
+
 
 .btn-xs {
     padding: .125rem .25rem;
@@ -32802,8 +32854,8 @@ html.maximized-card {
 .dark-mode .btn-app,
 .dark-mode .btn-default {
     background-color: #3a4047;
-    color: #fff;
-    border-color: #6c757d
+    color: #00ff2f;
+    border-color: #343a40
 }
 
 .dark-mode .btn-app:focus,
@@ -32811,7 +32863,23 @@ html.maximized-card {
 .dark-mode .btn-default:focus,
 .dark-mode .btn-default:hover {
     background-color: #3f474e;
-    color: #dee2e6;
+    color: #00ff2f;
+    border-color: #727b84
+}
+
+.dark-mode .btn-app-delete,
+.dark-mode .btn-default {
+    background-color: #3a4047;
+    color: #ff0000;
+    border-color: #343a40
+}
+
+.dark-mode .btn-app-delete:focus,
+.dark-mode .btn-app-delete:hover,
+.dark-mode .btn-default:focus,
+.dark-mode .btn-default:hover {
+    background-color: #3f474e;
+    color: #ff0000;
     border-color: #727b84
 }
 
@@ -32830,38 +32898,39 @@ html.maximized-card {
 
 .dark-mode .btn-primary {
     color: #fff;
-    background-color: #3f6791;
-    border-color: #3f6791;
+    background-color: #002c59;
+    border-color: #002c59;
+    
     box-shadow: none
 }
 
 .dark-mode .btn-primary:hover {
-    color: #fff;
-    background-color: #335476;
-    border-color: #304e6d
+    color: #002c59;
+    background-color: #ffffff;
+    border-color: #ffffff;
 }
 
 .dark-mode .btn-primary.focus,
 .dark-mode .btn-primary:focus {
-    color: #fff;
-    background-color: #335476;
-    border-color: #304e6d;
+    color: #002c59;
+    background-color: #ffffff;
+    border-color: #ffffff;
     box-shadow: 0 0 0 0 rgba(92, 126, 162, .5)
 }
 
 .dark-mode .btn-primary.disabled,
 .dark-mode .btn-primary:disabled {
-    color: #fff;
-    background-color: #3f6791;
-    border-color: #3f6791
+    color: #002c59;
+    background-color: #fff;
+    border-color: #fff
 }
 
 .dark-mode .btn-primary:not(:disabled):not(.disabled).active,
 .dark-mode .btn-primary:not(:disabled):not(.disabled):active,
 .show>.dark-mode .btn-primary.dropdown-toggle {
-    color: #fff;
-    background-color: #304e6d;
-    border-color: #2c4765
+    color: #002c59;
+    background-color: #ffffff;
+    border-color: #ffffff
 }
 
 .dark-mode .btn-primary:not(:disabled):not(.disabled).active:focus,
@@ -32914,8 +32983,8 @@ html.maximized-card {
 
 .dark-mode .btn-success {
     color: #fff;
-    background-color: #00bc8c;
-    border-color: #00bc8c;
+    background-color: #086e54;
+    border-color: #086e54;
     box-shadow: none
 }
 
@@ -33125,7 +33194,7 @@ html.maximized-card {
 .dark-mode .btn-dark {
     color: #fff;
     background-color: #292d32;
-    border-color: #4b545c;
+    border-color: #465460;
     box-shadow: none
 }
 
@@ -35876,7 +35945,7 @@ a.disabled.mailbox-attachment-close {
     box-shadow: none
 }
 
-.login-card-body .input-group .form-control:focus~.input-group-append .input-group-text,
+.login-card-body .input-group .form-control:focus~.input-btn-primaryappend .input-group-text,
 .login-card-body .input-group .form-control:focus~.input-group-prepend .input-group-text,
 .register-card-body .input-group .form-control:focus~.input-group-append .input-group-text,
 .register-card-body .input-group .form-control:focus~.input-group-prepend .input-group-text {
@@ -49063,7 +49132,7 @@ a.text-muted:hover {
 
 .accent-primary .dropdown-item.active,
 .accent-primary .dropdown-item:active {
-    background-color: #007bff;
+    background-color: #6c757d;
     color: #fff
 }
 

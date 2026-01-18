@@ -47,7 +47,7 @@ class Project extends Model
         $prefix = 'NX';
         $year   = Carbon::now()->format('y'); // 26
 
-        $lastProject = Project::where('project_id', 'like', $prefix.$year.'%')
+        $lastProject = Project::where('project_code', 'like', $prefix.$year.'%')
         ->latest('id')
         ->first();
 
@@ -55,7 +55,7 @@ class Project extends Model
             $series = 1;
         } else {
             // Extract last 3 digits (series)
-            $lastSeries = (int) substr($lastProject->project_id, -3);
+            $lastSeries = (int) substr($lastProject->project_code, -3);
             $series = $lastSeries + 1;
         }
 

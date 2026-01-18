@@ -73,10 +73,10 @@
         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
           <!-- User image -->
           <li class="user-header bg-user">
-            <img src="{{ asset('storage/user_logos/'.Auth::user()->user_logo) }}" class="img-circle elevation-2" alt="User Image">
+            <img src="{{ asset('storage/user_logos/'.Auth::user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
 
             <p>
-              {{ Auth::user()->user_name }} - {{ Auth::user()->user_role }}
+              {{ Auth::user()->name }} - {{ Auth::user()->role }}
             </p>
           </li>
           

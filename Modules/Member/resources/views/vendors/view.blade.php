@@ -63,7 +63,7 @@
                                 <td>{{ $vendor->email }}</td>
                             </tr>
                             <tr>
-                                <td>GST</td>
+                                <td>EIN No.</td>
                                 <td>{{ $vendor->gst_number }}</td>
                             </tr>
                             <tr>
