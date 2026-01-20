@@ -83,15 +83,25 @@
                                 <td>
                                     @if($vendor->w9_status === 'yes' && !empty($vendor->w9_files))
                                         @foreach(json_decode($vendor->w9_files, true) as $file)
-                                            <a href="{{ asset('storage/vendor_w9/'.$file) }}"
-                                            target="_blank"
-                                            class="btn btn-sm btn-outline-info mb-1">
-                                                <i class="fas fa-file"></i> View W-9
+                                            @php
+                                                $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                            @endphp
+                                            <a href="javascript:void(0);" 
+                                            class="btn btn-sm btn-outline-info mb-1 w9-view-btn" 
+                                            data-url="{{ asset('storage/vendor_w9/'.$file) }}" 
+                                            data-ext="{{ $ext }}">
+                                                <i class="fas fa-file"></i> {{ $file }}
                                             </a>
                                         @endforeach
                                     @else
                                         <span class="text-muted">Not Provided</span>
                                     @endif
+
+                                    <!-- Preview container -->
+                                    <div id="w9-preview" style="display:none; margin-top:10px; border:1px solid #ccc; padding:10px;">
+                                        <button type="button" class="btn btn-danger btn-sm mb-2" id="w9-close-btn">Close Preview</button>
+                                        <div id="w9-preview-content" style="min-height:200px;"></div>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -101,4 +111,54 @@
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const previewContainer = document.getElementById('w9-preview');
+    const previewContent = document.getElementById('w9-preview-content');
+    const closeBtn = document.getElementById('w9-close-btn');
+
+    // Attach click event to all W-9 buttons
+    document.querySelectorAll('.w9-view-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            const url = this.dataset.url;
+            const ext = this.dataset.ext.toLowerCase();
+
+            previewContent.innerHTML = ''; // clear previous content
+
+            if(['jpg','jpeg','png','webp'].includes(ext)) {
+                let img = document.createElement('img');
+                img.src = url;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '400px';
+                img.classList.add('img-fluid');
+                previewContent.appendChild(img);
+            } else if(ext === 'pdf') {
+                let embed = document.createElement('embed');
+                embed.src = url;
+                embed.type = 'application/pdf';
+                embed.width = '100%';
+                embed.height = '400px';
+                previewContent.appendChild(embed);
+            } else {
+                let a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.classList.add('btn','btn-primary');
+                a.innerText = 'Open File';
+                previewContent.appendChild(a);
+            }
+
+            previewContainer.style.display = 'block';
+            previewContainer.scrollIntoView({behavior: 'smooth'});
+        });
+    });
+
+    // Close preview
+    closeBtn.addEventListener('click', function() {
+        previewContainer.style.display = 'none';
+    });
+});
+</script>
 @endsection

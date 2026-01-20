@@ -60,6 +60,29 @@ class VendorController extends Controller
             $existingFiles = json_decode($vendor->w9_files, true) ?? [];
         }
 
+        if ($request->filled('deleted_w9_files')) {
+
+            $filesToDelete = json_decode($request->deleted_w9_files, true) ?? [];
+
+            foreach ($filesToDelete as $file) {
+                if (Storage::disk('public')->exists('vendor_w9/' . $file)) {
+                    Storage::disk('public')->delete('vendor_w9/' . $file);
+                }
+            }
+
+            $existingFiles = array_values(array_diff($existingFiles, $filesToDelete));
+            $vendor->w9_files = !empty($existingFiles)
+                ? json_encode($existingFiles)
+                : null;
+
+            // Optional: update status if no files left
+            if (empty($existingFiles)) {
+                $vendor->w9_status = 'no';
+            }
+
+            $vendor->save();
+        }
+
         if ($request->w9_status === 'no') {
             foreach ($existingFiles as $file) {
                 if (Storage::disk('public')->exists('vendor_w9/' . $file)) {
@@ -67,28 +90,52 @@ class VendorController extends Controller
                 }
             }
 
-            $validated['w9_files'] = null;
+            $vendor->w9_files  = null;
+            $vendor->w9_status = 'no';
+
+            $vendor->save();
         }
 
-        if ($request->w9_status === 'yes' && $request->hasFile('w9_files')) {
+        elseif ($request->w9_status === 'yes') {
 
-            foreach ($request->file('w9_files') as $file) {
-                $name = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
-                $file->storeAs('vendor_w9', $name, 'public');
-                $existingFiles[] = $name; // ✅ APPEND
+            if($request->hasFile('w9_files')) {
+
+                $vendorId = $vendor->id;
+
+                // 🔢 Get existing form numbers
+                $numbers = [];
+
+                foreach ($existingFiles as $file) {
+                    if (preg_match('/vendor' . $vendorId . '_w9_form(\d+)\./', $file, $match)) {
+                        $numbers[] = (int) $match[1];
+                    }
+                }
+
+                $counter = empty($numbers) ? 1 : max($numbers) + 1;
+
+                foreach ($request->file('w9_files') as $file) {
+                    $extension = $file->getClientOriginalExtension();
+
+                    $filename = 'vendor' . $vendorId . '_w9_form' . $counter . '.' . $extension;
+
+                    $file->storeAs('vendor_w9', $filename, 'public');
+
+                    $existingFiles[] = $filename;
+                    $counter++;
+                }
+
+                $vendor->update([
+                    'w9_files' => json_encode(array_values($existingFiles))
+                ]);
             }
-
-            $validated['w9_files'] = json_encode($existingFiles);
-        }
-
-        /* If W9 = YES but no new upload → keep old files */
-        if ($request->w9_status === 'yes' && !$request->hasFile('w9_files')) {
-            $validated['w9_files'] = json_encode($existingFiles);
+            else {
+                $validated['w9_files'] = json_encode($existingFiles);
+            }
         }
 
         $vendor = Vendor::updateOrCreate(
-            ['id' => $request->id ?? null], 
-            $validated
+            ['id' => $request->id],
+            collect($validated)->except(['w9_files'])->toArray()
         );
     
         if ($vendor) {

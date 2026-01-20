@@ -125,16 +125,56 @@
 
                         {{-- Existing uploaded files (EDIT mode) --}}
                         @if(!empty($vendor->w9_files))
-                            <div class="mt-2">
-                                @foreach(json_decode($vendor->w9_files) as $file)
-                                    <a href="{{ asset('storage/vendor_w9/'.$file) }}"
-                                    target="_blank"
-                                    class="badge badge-info mr-1">
-                                        View File
-                                    </a>
-                                @endforeach
+                            <div class="mt-3" id="existing_w9_files">
+
+                                <table class="table table-bordered table-sm">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th style="width:60px;">SL No</th>
+                                            <th>File</th>
+                                            <th style="width:80px;" class="text-center">Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach(json_decode($vendor->w9_files) as $index => $file)
+                                            <tr class="w9-file-item" data-file="{{ $file }}">
+                                                <td>{{ $index + 1 }}</td>
+
+                                                <td>
+                                                    <a href="javascript:void(0)" class="btn btn-sm btn-outline-info mb-1 w9-view-btn" data-file="{{ asset('storage/vendor_w9/'.$file) }}"> <i class="fas fa-file"></i> {{ $file }} </a>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <span class="badge badge-danger delete-w9-file"
+                                                        style="cursor:pointer;">
+                                                        ✕
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                                <input type="hidden" name="deleted_w9_files" id="deleted_w9_files">
                             </div>
                         @endif
+
+                    </div>
+                </div>
+                <div class="col-md-12 mt-3 d-none" id="w9_preview_wrapper">
+                    <div class="card card-outline card-info">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                W-9 Preview
+                            </h5>
+                            <button type="button"
+                                    class="close"
+                                    onclick="$('#w9_preview_wrapper').addClass('d-none')">
+                                &times;
+                            </button>
+                        </div>
+                        <div class="card-body" id="w9_preview_body">
+                            {{-- file loads here --}}
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -164,7 +204,7 @@
     </form>
 </div>
 @endsection
-
+@include('partials.delete-modal')
 @section('scripts')
 <script>
 $(function () {
@@ -210,6 +250,77 @@ $(function () {
         toggleW9Upload();
     });
 
+});
+</script>
+<script>
+$(document).on('click', '.view-w9-file', function () {
+
+    const fileUrl = $(this).data('file');
+    const isPdf = fileUrl.toLowerCase().endsWith('.pdf');
+
+    let previewHtml = '';
+
+    if (isPdf) {
+        previewHtml = `
+            <iframe src="${fileUrl}"
+                    width="100%"
+                    height="500"
+                    style="border:1px solid #ccc;">
+            </iframe>
+        `;
+    } else {
+        previewHtml = `
+            <img src="${fileUrl}"
+                 class="img-fluid"
+                 style="border:1px solid #ccc;">
+        `;
+    }
+
+    $('#w9_preview_body').html(previewHtml);
+    $('#w9_preview_wrapper').removeClass('d-none');
+
+    // Smooth scroll to preview
+    $('html, body').animate({
+        scrollTop: $('#w9_preview_wrapper').offset().top - 80
+    }, 300);
+});
+</script>
+<script>
+let deletedW9Files = [];
+let w9RowToDelete = null;
+let w9FileToDelete = null;
+
+// When delete icon is clicked
+$(document).on('click', '.delete-w9-file', function () {
+
+    w9RowToDelete = $(this).closest('.w9-file-item');
+    w9FileToDelete = w9RowToDelete.data('file');
+
+    // Open modal
+    $('#delete-confirmation-modal').modal('show');
+});
+
+// When YES is clicked in modal
+$('#confirm-delete-btn').on('click', function (e) {
+    e.preventDefault();
+
+    if (!w9FileToDelete || !w9RowToDelete) return;
+
+    // Store deleted file
+    deletedW9Files.push(w9FileToDelete);
+
+    // Update hidden input
+    $('#deleted_w9_files').val(JSON.stringify(deletedW9Files));
+
+    // Remove row from UI
+    w9RowToDelete.remove();
+
+    // Reset temp variables
+    w9RowToDelete = null;
+    w9FileToDelete = null;
+
+    // Close modal
+    $('#delete-confirmation-modal').modal('hide');
 });
 </script>
 @endsection
