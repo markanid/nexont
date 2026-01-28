@@ -36,7 +36,6 @@
                                 <th>SNo</th>
                                 <th>Name</th>
                                 <th>Email</th>
-                                <th>Type</th> 
                                 <th>Created On</th>
                                 <th>Options</th> 
                             </tr>
@@ -48,12 +47,11 @@
                                     <td>{{$i++;}}</td>
                                     <td><a href="{{route('users.show', $user->id)}}">{{$user->name}}</a></td>
                                     <td>{{$user->email}}</td>
-                                    <td>{{$user->role}}</td>
                                     <td>{{ date('d/m/Y', strtotime($user->created_at)) }}</td>
                                     <td>
-                                    <a class="btn btn-app" href="{{route('users.edit', $user->id)}}"><i class="far fa-edit"></i></a>
-                                    @if($user->role != 'Admin' && $user->id != auth()->user()->id)
-                                        <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('users.delete', ['id' => $user->id]) }}"><i class="far fa-trash-alt"></i></a>
+                                        @if(auth()->user()->designation == 'Admin')
+                                            <a class="btn btn-app" href="{{route('users.edit', $user->id)}}"><i class="far fa-edit"></i></a>
+                                            <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('users.delete', ['id' => $user->id]) }}"><i class="far fa-trash-alt"></i></a>
                                     @endif
                                     </td>
                                 </tr>

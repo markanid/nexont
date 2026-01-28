@@ -18,10 +18,12 @@ class ProjectionController extends Controller
      */
     public function index()
     {
-        $data['projections']= Projection::latest('id')->get();
-        $data['page_title'] = "Projection List";
-        $data['title']      = "Projections";
-        return view('projection::projections.index', $data);  
+        return view('projection::projections.index', [
+            'projections' => Projection::latest()->get(),
+            'page_title'  => 'Projection List',
+            'title'       => 'Projections',
+            'empDesig'    => auth('employee')->user()->designation ?? '',
+        ]); 
     }
 
     public function createOrEdit($id = null)
@@ -60,12 +62,52 @@ class ProjectionController extends Controller
     
     public function show($id)
     {
-        $data['title']              = "Projections";
-        $data['page_title']         = "Projection Details";
-        $data['projection']         = Projection::findOrFail($id);
-        $data['running_projects']   = RunningProject::with(['project.client'])->where('projection_id', $id)->where('created_by', Auth::id())->get();
-        $data['projection_summary'] = RunningProject::select('created_by',DB::raw('SUM(projection_value)as total_projection'))->where('projection_id', $id)->groupBy('created_by')->with('creator')->get();
-        return view('projection::projections.view', $data);
+        $employee = auth('employee')->user();
+        $empDesig = $employee->designation;
+        $runningQuery = RunningProject::with('project.client')
+            ->where('projection_id', $id);
+
+        // If Project Manager → only own data
+        if ($empDesig === 'Project Manager') {
+            $runningQuery->where('created_by', $employee->id);
+        }
+
+        return view('projection::projections.view', [
+            'empDesig'            => $empDesig,
+            'title'               => 'Projections',
+            'page_title'          => 'Projection Details',
+            'projection'          => Projection::findOrFail($id),
+            'running_projects'    => $runningQuery->get(),
+            'projection_summary'  => in_array($empDesig, ['Admin', 'PMO'])
+                ? RunningProject::select(
+                    'created_by',
+                    DB::raw('SUM(projection_value) as total_projection')
+                )
+                ->where('projection_id', $id)
+                ->groupBy('created_by')
+                ->with('creator')
+                ->get()
+                : collect(), // empty for PM
+        ]);
+
+        // return view('projection::projections.view', [
+        //     'empDesig'            => auth('employee')->user()->designation ?? '',
+        //     'title'               => 'Projections',
+        //     'page_title'          => 'Projection Details',
+        //     'projection'          => Projection::findOrFail($id),
+        //     'running_projects'    => RunningProject::with('project.client')
+        //                                 ->where('projection_id', $id)
+        //                                 ->where('created_by', auth('employee')->id())
+        //                                 ->get(),
+        //     'projection_summary'  => RunningProject::select(
+        //                                 'created_by',
+        //                                 DB::raw('SUM(projection_value) as total_projection')
+        //                             )
+        //                             ->where('projection_id', $id)
+        //                             ->groupBy('created_by')
+        //                             ->with('creator')
+        //                             ->get(),
+        // ]);
     }
 
     public function destroy($id)

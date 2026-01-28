@@ -5,6 +5,7 @@ namespace Modules\Member\app\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Modules\Member\app\Models\Employee;
 
@@ -20,11 +21,15 @@ class EmployeeController extends Controller
 
     public function createOrEdit($id = null)
     {
-        $employee = $id ? Employee::findOrFail($id) : new Employee();
-        $employee_code = $id ? $employee->employee_code : Employee::getEmployeeCode();
+        $employee           = $id ? Employee::findOrFail($id) : new Employee();
+        $isEdit             = isset($employee->id);
+        $isAdminEdit        = $isEdit && $employee->designation === 'Admin';
+        $employee_code      = $id ? $employee->employee_code : Employee::getEmployeeCode();
         $data['page_title'] = $id ? "Edit Employee" : "Create Employee";
-        $data['employee']   = $employee;
-        $data['employee_code']   = $employee_code;
+        $data['isEdit']         = $isEdit;
+        $data['isAdminEdit']    = $isAdminEdit;
+        $data['employee']       = $employee;
+        $data['employee_code']  = $employee_code;
         return view('member::employees.create', $data);
     }
 
@@ -35,9 +40,12 @@ class EmployeeController extends Controller
             'name'               => 'required|string|max:255',
             'phone'              => 'nullable|string|max:20',
             'email'              => 'nullable|email|max:255',
-            'designation'        => 'nullable|string|max:255',
+            'designation'        => 'nullable|string|in:Admin,Project Manager,PMO,Sales Manager,Accountant,Employee',
             'status'             => 'nullable|in:Active,Inactive',
             'image'              => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'password' => $request->id
+            ? 'nullable|min:6|confirmed'   // edit → optional
+            : 'required|min:6|confirmed',  // create → required
         ];
         $validated = $request->validate($rules);
         $isNew = empty($request->id);
@@ -52,6 +60,12 @@ class EmployeeController extends Controller
             $file->storeAs('employee_logos', $filename, 'public'); 
             $validated['image'] = $filename; 
         }  
+
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']); // don't overwrite existing password
+        }
 
         $employee = Employee::updateOrCreate(
             ['id' => $request->id ?? null],

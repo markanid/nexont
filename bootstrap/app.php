@@ -17,11 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
         ]);
-        
-        $middleware->redirectTo(
-            guests: '/',    // Unauthenticated users go here
-            users: '/dashboard'  // Authenticated users trying to access guest routes go here
-        );
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

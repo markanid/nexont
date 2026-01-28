@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Member\app\Http\Controllers\{EmployeeController, VendorController};
 
-Route::group(['middleware'=>'auth'],function(){
+Route::group(['middleware'=>'auth:employee'],function(){
 
     $resources = [
         'vendors'       => VendorController::class,

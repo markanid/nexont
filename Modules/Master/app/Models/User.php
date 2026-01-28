@@ -5,27 +5,16 @@ namespace Modules\Master\app\Models;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Modules\Consumption\app\Models\Consumption;
-use Modules\Estimation\app\Models\Estimation;
-use Modules\Finance\app\Models\Expense;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Project\app\Models\Project;
-use Modules\Projection\app\Models\Projection;
-use Modules\Projection\app\Models\RunningProject;
-use Modules\Purchase\app\Models\Purchase;
-use Modules\Returns\app\Models\Returns;
-use Modules\Sale\app\Models\Sale;
-use Modules\Service\app\Models\Service;
 
-class User extends Model
+class User extends Authenticatable
 {
     function __construct(){
         //
     }
-    protected $fillable = ['name', 'email', 'password', 'avatar', 'role', 'company_id'];
-    
+    protected $fillable = ['name', 'email', 'password', 'avatar', 'company_id'];
+    protected $hidden = ['password'];
     use HasFactory;
 
     public function company()
@@ -46,15 +35,5 @@ class User extends Model
     public function salesProjects()
     {
         return $this->hasMany(Project::class, 'sales_manager_id');
-    }
-
-    public function projections()
-    {
-        return $this->hasMany(Projection::class, 'created_by');
-    }
-
-    public function runningProjects()
-    {
-        return $this->hasMany(RunningProject::class, 'created_by', 'id');
     }
 }

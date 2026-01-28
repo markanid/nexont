@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('remarks')->nullable();
             $table->string('invoice_details')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
-            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('created_by')->references('id')->on('employees')->onDelete('set null');
             $table->timestamps();
         });
     }

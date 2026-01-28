@@ -22,7 +22,7 @@
    <div class="card-header">
       <h3 class="card-title"><i class="fas fa-user-tag"></i> {{ $page_title }}</h3>
       <div class="card-tools">
-         @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+         @if(in_array($empDesig, ['Admin','PMO']))
             <a href="{{ route('projections.edit', $projection->id) }}" class="btn btn-success btn-sm btn-flat"><i class="fas fa-edit"></i> Edit</a>
          @endif
          <a href="{{ route('projections.index') }}" class="btn btn-dark btn-sm btn-flat"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
@@ -58,7 +58,7 @@
                      </tr>
                   </tbody>
                </table>
-               @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+               @if(in_array($empDesig, ['Admin','PMO']))
                   <div class="mt-3">
                      <h5 class="mb-2"><strong>Projection Summary (User-wise)</strong></h5>
 

@@ -51,8 +51,10 @@
                                     <td>{{$employee->phone}}</td>
                                     <td>{{$employee->designation}}</td>
                                     <td>
-                                    <a class="btn btn-app" href="{{route('employees.edit', $employee->id)}}"><i class="far fa-edit"></i></a>
-                                    <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('employees.delete', ['id' => $employee->id]) }}"><i class="far fa-trash-alt"></i></a>
+                                        @if(auth()->user()->designation == 'Admin')
+                                            <a class="btn btn-app" href="{{route('employees.edit', $employee->id)}}"><i class="far fa-edit"></i></a>
+                                            <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('employees.delete', ['id' => $employee->id]) }}"><i class="far fa-trash-alt"></i></a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

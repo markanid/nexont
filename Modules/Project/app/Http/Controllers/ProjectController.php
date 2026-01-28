@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Modules\Master\app\Models\Company;
 use Modules\Master\app\Models\User;
+use Modules\Member\app\Models\Employee;
 use Modules\Project\app\Models\Project;
 
 class ProjectController extends Controller
@@ -25,11 +26,11 @@ class ProjectController extends Controller
         $data['page_title'] = $id ? "Edit Project" : "Create Project";
         $data['title']      = "Projects";
         $data['project']    = $project;
-        $data['project_id'] = $id ? $project->project_id : Project::getProjectID();
+        $data['project_code'] = $id ? $project->project_code : Project::getProjectID();
         $data['companies']  = Company::where('type', 'client')->get();
-        $data['clients']    = User::where('role', 'Client')->get();
-        $data['pms']        = User::where('role', 'Project Manager')->get();
-        $data['sms']        = User::where('role', 'Sales Manager')->get();
+        $data['clients']    = User::all();
+        $data['pms']        = Employee::where('designation', 'Project Manager')->get();
+        $data['sms']        = Employee::where('designation', 'Sales Manager')->get();
         $data['currencies'] = config('currencies.list');
         return view('project::projects.create', $data);
     }

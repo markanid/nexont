@@ -26,7 +26,9 @@
             <div class="card card-primary card-outline">
                 <div class="card-header">
                     <h3 class="card-title"><i class="fas fa-chart-line"></i> {{$page_title}}</h3>
-                    <a class="btn btn-primary btn-sm btn-flat float-right" href="{{route('projections.create')}}"><i class="fas fa-plus-circle"></i> Create</a>
+                    @if(in_array($empDesig, ['Admin','PMO']))
+                        <a class="btn btn-primary btn-sm btn-flat float-right" href="{{route('projections.create')}}"><i class="fas fa-plus-circle"></i> Create</a>
+                    @endif
                 </div>
             </div>
             <div class="card">
@@ -36,7 +38,7 @@
                             <tr>
                                 <th>SNo</th>
                                 <th>Projection</th>
-                                @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+                                @if(in_array($empDesig, ['Admin','PMO']))
                                     <th>Options</th> 
                                 @endif
                             </tr>
@@ -46,7 +48,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td><a href="{{route('projections.show', $projection->id)}}">{{$projection->month.'-'.$projection->year}}</a></td>
-                                    @if(in_array(auth()->user()->role, ['Admin', 'PMO']))
+                                    @if(in_array($empDesig, ['Admin','PMO']))
                                         <td>
                                         <a class="btn btn-app" href="{{route('projections.edit', $projection->id)}}"><i class="far fa-edit"></i></a>
                                         <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('projections.delete', ['id' => $projection->id]) }}"><i class="far fa-trash-alt"></i></a>

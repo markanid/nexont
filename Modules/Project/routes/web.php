@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Project\app\Http\Controllers\ProjectController;
 
-Route::group(['middleware'=>'auth'],function(){
+Route::group(['middleware'=>'auth:web,employee'],function(){
 
     $resources = [
         'projects'       => ProjectController::class,

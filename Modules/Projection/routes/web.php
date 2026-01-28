@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Projection\app\Http\Controllers\ProjectionController;
 use Modules\Projection\app\Http\Controllers\RunningProjectController;
 
-Route::group(['middleware'=>'auth'],function(){
+Route::group(['middleware'=>'auth:employee'],function(){
 
     $resources = [
         'projections'       => ProjectionController::class,

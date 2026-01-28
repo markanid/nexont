@@ -45,7 +45,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Nexont Project ID <sup>*</sup></label>
-                        <input type="text" name="project_id" id="project_id" class="form-control" value="{{ old('project_id', $project->project_id ?? $project_id) }}" readonly>
+                        <input type="text" name="project_code" id="project_code" class="form-control" value="{{ old('project_code', $project->project_code ?? $project_code) }}" readonly>
                     </div>
                 </div>
                 <div class="col-md-4">

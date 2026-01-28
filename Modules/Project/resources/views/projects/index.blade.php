@@ -46,7 +46,7 @@
                             @foreach($projects as $project)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{$project->project_id }}</td>
+                                    <td>{{$project->project_code }}</td>
                                     <td><a href="{{route('projects.show', $project->id)}}">{{$project->project_name}}</a></td>
                                     <td><a href="{{route('companies.show', $project->company_id)}}">{{$project->company->name}}</a></td>
                                     <td><a href="{{route('users.show', $project->client_id)}}">{{$project->client->name}}</a></td>

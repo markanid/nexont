@@ -2,5 +2,7 @@
     "Master": true,
     "Member": true,
     "Project": true,
-    "Projection": true
+    "Projection": true,
+    "Task": true,
+    "Timesheet": true
 }

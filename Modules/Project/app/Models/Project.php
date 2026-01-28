@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Master\app\Models\Company;
 use Modules\Master\app\Models\User;
 use Modules\Projection\app\Models\RunningProject;
+use Modules\Timesheet\app\Models\Activity;
 
 class Project extends Model
 {
@@ -37,9 +38,9 @@ class Project extends Model
         return $this->belongsTo(User::class, 'sales_manager_id');
     }
 
-    public function runningProjects()
+    public function activities()
     {
-        return $this->hasMany(RunningProject::class, 'project_id' , 'id');
+        return $this->hasMany(Activity::class, 'project_id' , 'id');
     }
 
     public static function getProjectID()

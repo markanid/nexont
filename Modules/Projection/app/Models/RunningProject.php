@@ -5,7 +5,7 @@ namespace Modules\Projection\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Master\app\Models\User;
+use Modules\Member\app\Models\Employee;
 use Modules\Project\app\Models\Project;
 
 // use Modules\Projection\Database\Factories\ProjectionDetailFactory;
@@ -31,6 +31,6 @@ class RunningProject extends Model
 
     public function creator()
     {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->belongsTo(Employee::class, 'created_by');
     }
 }

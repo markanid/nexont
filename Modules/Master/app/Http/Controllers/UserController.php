@@ -26,32 +26,28 @@ class UserController extends Controller
         $user = $id ? User::findOrFail($id) : new User();
 
         $isEdit = isset($user->id);
-        $isAdminEdit = $isEdit && $user->role === 'Admin';
 
         $data = [
             'user'              => $user,
             'title'             => "Users",
             'page_title'        => $isEdit ? "Edit User" : "Create User",
             'isEdit'            => $isEdit,
-            'isAdminEdit'       => $isAdminEdit,
             'hasUsers'          => User::exists(),
-            'hasAdminUser'      => User::where('role', 'Admin')->exists(),
             'hasClientCompany'  => Company::where('type', 'client')->exists(),
             'clientCompanies'   => Company::where('type', 'client')->get(),
-            'employees'         => Employee::select('id', 'name')->get(),
         ];
         return view('master::users.create', $data);
     }
     
     public function storeOrUpdate(Request $request)
     {
-        $role       = $request->input('role');
         $isUpdate   = $request->filled('id');
         $userId     = $request->id ?? null;
         
         $rules = [
-            'role'   => 'required|string|in:Admin,Client,Project Manager,PMO,Sales Manager,Accountant',
-            'avatar' => 'nullable|image|mimes:jpg,png,jpeg|max:3000', // 3MB max
+            'name'          => 'required|string|max:255',
+            'company_id'    => 'required|exists:companies,id',
+            'avatar'        => 'nullable|image|mimes:jpg,png,jpeg|max:3000', // 3MB max
         ];
 
         if ($isUpdate) {
@@ -62,23 +58,12 @@ class UserController extends Controller
             $rules['password']  = 'required|min:8|confirmed';
         }
 
-        if (in_array($role, ['Admin', 'Client'])) {
-            $rules['name'] = 'required|string|max:100';
-        } else {
-            $rules['employee_name'] = 'required|string|exists:employees,name';
-        }
-
-        if ($role === 'Client') {
-            $rules['company_id'] = 'required|exists:companies,id';
-        }
-
         $validated = $request->validate($rules);
         
         $user = $isUpdate ? User::findOrFail($userId) : new User();
 
         $user->email      = $validated['email'];
-        $user->role       = $validated['role'];
-        $user->name       = in_array($role, ['Admin', 'Client']) ? $validated['name'] : $validated['employee_name'] ?? $user->name;
+        $user->name       = $validated['name'];
         $user->company_id = $validated['company_id'] ?? null;
 
         if (!$isUpdate || $request->filled('password')) {
@@ -140,17 +125,32 @@ class UserController extends Controller
                 ->withInput();
         }
 
-        $user = Auth::user();
+        $type = session('type'); // 'user' or 'employee'
+        $id = session('id');
 
-        // Check if the current password matches the user's current password
-        if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->route('users.changePasswordForm')
-                ->withErrors(['current_password' => 'The current password is incorrect.']);
+        if ($type === 'user') {
+            $user = User::find($id);
+
+            if (!$user || !Hash::check($request->current_password, $user->password)) {
+                return redirect()->route('users.changePasswordForm')
+                    ->withErrors(['current_password' => 'The current password is incorrect.']);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+        } elseif ($type === 'employee') {
+            $employee = Employee::find($id);
+
+            if (!$employee || !Hash::check($request->current_password, $employee->password)) {
+                return redirect()->route('users.changePasswordForm')
+                    ->withErrors(['current_password' => 'The current password is incorrect.']);
+            }
+
+            $employee->password = Hash::make($request->new_password);
+            $employee->save();
+        } else {
+            abort(403, 'Invalid user type.');
         }
-
-        // Update the user's password
-        $user->password = Hash::make($request->new_password);
-        $user->save();
 
         return redirect()->route('logout')->with('success', 'Your password has been changed successfully!');
     }

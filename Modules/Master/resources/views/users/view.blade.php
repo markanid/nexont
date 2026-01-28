@@ -24,7 +24,6 @@
     <div class="card-header">
         <h3 class="card-title"><i class="fas fa-user-cog"></i> {{$title}}</h3>
         <div class="card-tools">
-             <a class="btn btn-secondary btn-sm btn-flat" href="{{route('users.changePasswordForm')}}"><i class="fas fa-key"></i> Change Password</a>
             <a class="btn btn-success btn-sm btn-flat" href="{{route('users.edit', $user->id)}}"><i class="fas fa-edit"></i> Edit</a>
             <a class="btn btn-dark btn-sm btn-flat" href="{{route('users.index')}}"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
         </div>
@@ -62,15 +61,9 @@
                                 <td>{{ $user->email }}</td>
                             </tr>
                             <tr>
-                                <td>User Type</td>
-                                <td>{{ $user->role }}</td>
-                            </tr>
-                             @if($user->role === 'Client')
-                            <tr>
                                 <td>Company Name</td>
                                 <td>{{ $user->company->name }}</td>
                             </tr>
-                            @endif
                         </tbody>
                     </table>
                 </div>

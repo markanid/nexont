@@ -40,7 +40,7 @@
                 <tbody>
                     <tr>
                         <td>Project ID</td>
-                        <td style="color: #007bff;">{{ $project->project_id }}</td>
+                        <td style="color: #007bff;">{{ $project->project_code }}</td>
                     </tr>
                     <tr>
                         <td>Project Name</td>

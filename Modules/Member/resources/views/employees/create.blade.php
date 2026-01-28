@@ -68,14 +68,45 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label>Designation</label>
-                        <input type="text" name="designation" class="form-control" value="{{ old('designation', $employee->designation ?? '') }}" tabindex="4">
+                        <label>Password <sup>*</sup></label>
+                        <input type="password" name="password" class="form-control" tabindex="4">
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Confirm Password <sup>*</sup></label>
+                        <input type="password" name="password_confirmation" class="form-control" tabindex="5">
+                    </div>
+                </div>
+
+                {{-- Role Dropdown --}}
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Designation <sup>*</sup></label>
+                        <select name="designation" id="designation" class="form-control" tabindex="4">
+                            <option value="">-- Select Designation --</option>
+
+                            @if($isEdit && $isAdminEdit)
+                                {{-- Editing Admin → ONLY Admin option --}}
+                                <option value="Admin" selected>Admin</option>
+                            @else
+                                {{-- Create OR Edit non-admin user --}}
+                                @php $selectedRole = old('role', $employee->designation ?? ''); @endphp
+                                <option value="Project Manager" {{ $selectedRole == 'Project Manager' ? 'selected' : '' }}>Project Manager</option>
+                                <option value="PMO" {{ $selectedRole == 'PMO' ? 'selected' : '' }}>PMO</option>
+                                <option value="Sales Manager" {{ $selectedRole == 'Sales Manager' ? 'selected' : '' }}>Sales Manager</option>
+                                <option value="Accountant" {{ $selectedRole == 'Accountant' ? 'selected' : '' }}>Accountant</option>
+                                <option value="Employee" {{ $selectedRole == 'Employee' ? 'selected' : '' }}>Employee</option>
+                            @endif
+                        </select>
+                        @error('designation')<span class="text-danger">{{ $message }}</span>@enderror
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Status</label>
-                        <select name="status" class="form-control" tabindex="5">
+                        <select name="status" class="form-control" tabindex="7">
                             <option value="Active" {{ old('status', $employee->status ?? '') == 'Active' ? 'selected' : '' }}>Active</option>
                             <option value="Inactive" {{ old('status', $employee->status ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
                         </select>
@@ -86,7 +117,7 @@
 						<label for="customFile">Image(150x150)</label>
                         	<div class="input-group">
 							<div class="custom-file">
-                                <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" tabindex="6">
+                                <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" tabindex="8">
                                 <label class="custom-file-label" for="customFile">Choose file</label>
 							</div>
                         </div>
@@ -103,8 +134,8 @@
             </div>
         </div>
         <div class="card-footer" align="center">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="7"><i class="fas fa-save"></i> Save</button>
-             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="8"><i class="fas fa-undo-alt"></i> Reset</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="9"><i class="fas fa-save"></i> Save</button>
+             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="10"><i class="fas fa-undo-alt"></i> Reset</button>
         </div>
     </form>
 </div>
