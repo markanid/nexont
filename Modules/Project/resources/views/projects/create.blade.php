@@ -45,7 +45,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Nexont Project ID <sup>*</sup></label>
-                        <input type="text" name="project_code" id="project_code" class="form-control" value="{{ old('project_code', $project->project_code ?? $project_code) }}" readonly>
+                        <input type="text" name="project_code" id="project_code" class="form-control" value="{{ old('project_code', $project->project_code ?? $project_code) }}">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -179,7 +179,7 @@
                             </div>
                             <div class="col-3 mb-2">
                                 <label class="small">Currency</label>
-                                <select name="po_currency" id="po_currency" class="form-control">
+                                <select name="po_currency" id="po_currency" class="form-control" tabindex="14">
                                     @foreach($currencies as $code => $name)
                                         <option value="{{ $code }}"
                                             {{ old('po_currency', $project->po_currency ?? 'INR') == $code ? 'selected' : '' }}>
@@ -197,34 +197,313 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Start Date</label>
-                        <div class="input-group date" id="start_date" data-target-input="nearest">
-                            <input type="text" name="start_date" class="form-control" value="{{ old('start_date', isset($project->start_date) ? \Carbon\Carbon::parse ($project->start_date)->format('d/m/Y') : '') }}" tabindex="14">
-                            <div class="input-group-append" data-target="#start_date" data-toggle="datetimepicker">
+                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" name="start_date" id="date" data-target="#reservationdate" tabindex="15" value="{{ old('start_date', isset($project->start_date) ? \Carbon\Carbon::parse ($project->start_date)->format('d/m/Y') : '') }}" />
+                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
                             @if ($errors->has('start_date'))
                             <span class="text-danger">{{ $errors->first('start_date') }}</span>
                             @endif
-                        </div>  
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Kitty Value</label>
-                        <input type="text" name="kitty" id="kitty" class="form-control" value="{{ old('kitty', $project->kitty ?? '0.00') }}" tabindex="15" readOnly>
+                        <input type="text" name="kitty" id="kitty" class="form-control" value="{{ old('kitty', $project->kitty ?? '0.00') }}" tabindex="16" readOnly>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Change Order Value</label>
-                        <input type="text" name="covalue" id="covalue" class="form-control" value="{{ old('covalue', $project->covalue ?? '0.00') }}" tabindex="16" readOnly>
+                        <input type="text" name="covalue" id="covalue" class="form-control" value="{{ old('covalue', $project->covalue ?? '0.00') }}" tabindex="17" readOnly>
                     </div>
                 </div>
+                <div class="col-md-12">
+                    <div class="group-box">
+                        <label class="group-title">Project Hours Summary - "For Approval"</label>
+                        <div class="row mt-2">
+
+                            {{-- ================= MISC STEEL ================= --}}
+                            <div class="col-md-6">
+                                <div class="group-box">
+                                    <label class="group-title">Misc Steel</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Modeling Hours</label>
+                                                <input type="number" step="0.01" class="form-control app_misc" name="app_misc_modeling" value="{{ old('app_misc_modeling', $project->app_misc_modeling ?? '') }}" tabindex="18">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Detailing Hours</label>
+                                                <input type="number" step="0.01" class="form-control app_misc" name="app_misc_detailing" value="{{ old('app_misc_detailing', $project->app_misc_detailing ?? '') }}" tabindex="19">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Erection Hours</label>
+                                                <input type="number" step="0.01" class="form-control app_misc" name="app_misc_erection" value="{{ old('app_misc_erection', $project->app_misc_erection ?? '') }}" tabindex="20">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Model</label>
+                                                <input type="number" step="0.01" class="form-control app_misc" name="app_misc_check_model" value="{{ old('app_misc_check_model', $project->app_misc_check_model ?? '') }}" tabindex="21">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Detailing & Erection</label>
+                                                <input type="number" step="0.01" class="form-control app_misc" name="app_misc_check_det_erec" value="{{ old('app_misc_check_det_erec', $project->app_misc_check_det_erec ?? '') }}" tabindex="22">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mt-2">
+                                                <label>Remarks</label>
+                                                <textarea class="form-control" name="app_misc_remarks" tabindex="23">{{ old('app_misc_remarks', $project->app_misc_remarks ?? '') }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Total Hours</label>
+                                                <input type="text" readonly class="form-control" id="app_misc_total" name="app_misc_total" value="{{ old('app_misc_total', $project->app_misc_total ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- ================= MAIN STEEL ================= --}}
+                            <div class="col-md-6">
+                                <div class="group-box">
+                                    <label class="group-title">Main Steel</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Modeling Hours</label>
+                                                <input type="number" step="0.01" class="form-control app_main" name="app_main_modeling" value="{{ old('app_main_modeling', $project->app_main_modeling ?? '') }}" tabindex="24">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Detailing Hours</label>
+                                                <input type="number" step="0.01" class="form-control app_main" name="app_main_detailing" value="{{ old('app_main_detailing', $project->app_main_detailing ?? '') }}" tabindex="25">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Erection Hours</label>
+                                                <input type="number" step="0.01" class="form-control app_main" name="app_main_erection" value="{{ old('app_main_erection', $project->app_main_erection ?? '') }}" tabindex="26">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Model</label>
+                                                <input type="number" step="0.01" class="form-control app_main" name="app_main_check_model" value="{{ old('app_main_check_model', $project->app_main_check_model ?? '') }}" tabindex="27">
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Detailing & Erection</label>
+                                                <input type="number" step="0.01" class="form-control app_main" name="app_main_check_det_erec" value="{{ old('app_main_check_det_erec', $project->app_main_check_det_erec ?? '') }}" tabindex="28">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mt-2">
+                                                <label>Remarks</label>
+                                                <textarea class="form-control" name="app_main_remarks" tabindex="29">{{ old('app_main_remarks', $project->app_main_remarks ?? '') }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Total Hours</label>
+                                                <input type="text" readonly class="form-control" id="app_main_total" name="app_main_total" value="{{ old('app_main_total', $project->app_main_total ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="group-box">
+                        <label class="group-title">Project Hours Summary - "For Fabrication"</label>
+                        <div class="row mt-2">
+
+                            {{-- ================= FAB MISC STEEL ================= --}}
+                            <div class="col-md-6">
+                                <div class="group-box">
+                                    <label class="group-title">Misc Steel</label>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Modeling Hours</label>
+                                                <input type="number" step="0.01" class="form-control fab_misc" name="fab_misc_modeling" value="{{ old('fab_misc_modeling', $project->fab_misc_modeling ?? '') }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Detailing Hours</label>
+                                                <input type="number" step="0.01" class="form-control fab_misc" name="fab_misc_detailing" value="{{ old('fab_misc_detailing', $project->fab_misc_detailing ?? '') }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Erection Hours</label>
+                                                <input type="number" step="0.01" class="form-control fab_misc" name="fab_misc_erection" value="{{ old('fab_misc_erection', $project->fab_misc_erection ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Model</label>
+                                                <input type="number" step="0.01" class="form-control fab_misc" name="fab_misc_check_model" value="{{ old('fab_misc_check_model', $project->fab_misc_check_model ?? '') }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Detailing & Erection</label>
+                                                <input type="number" step="0.01" class="form-control fab_misc" name="fab_misc_check_det_erec" value="{{ old('fab_misc_check_det_erec', $project->fab_misc_check_det_erec ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mt-2">
+                                                <label>Remarks</label>
+                                                <textarea class="form-control" name="fab_misc_remarks">{{ old('fab_misc_remarks', $project->fab_misc_remarks ?? '') }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Total Hours</label>
+                                                <input type="text" readonly class="form-control" id="fab_misc_total" name="fab_misc_total" value="{{ old('fab_misc_total', $project->fab_misc_total ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- ================= FAB MAIN STEEL ================= --}}
+                            <div class="col-md-6">
+                                <div class="group-box">
+                                    <label class="group-title">Main Steel</label>
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Modeling Hours</label>
+                                                <input type="number" step="0.01" class="form-control fab_main" name="fab_main_modeling" value="{{ old('fab_main_modeling', $project->fab_main_modeling ?? '') }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Detailing Hours</label>
+                                                <input type="number" step="0.01" class="form-control fab_main" name="fab_main_detailing" value="{{ old('fab_main_detailing', $project->fab_main_detailing ?? '') }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Erection Hours</label>
+                                                <input type="number" step="0.01" class="form-control fab_main" name="fab_main_erection" value="{{ old('fab_main_erection', $project->fab_main_erection ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Model</label>
+                                                <input type="number" step="0.01" class="form-control fab_main" name="fab_main_check_model" value="{{ old('fab_main_check_model', $project->fab_main_check_model ?? '') }}">
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Checking Detailing & Erection</label>
+                                                <input type="number" step="0.01" class="form-control fab_main" name="fab_main_check_det_erec" value="{{ old('fab_main_check_det_erec', $project->fab_main_check_det_erec ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group mt-2">
+                                                <label>Remarks</label>
+                                                <textarea class="form-control" name="fab_main_remarks">{{ old('fab_main_remarks', $project->fab_main_remarks ?? '') }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Total Hours</label>
+                                                <input type="text" readonly class="form-control" id="fab_main_total" name="fab_main_total" value="{{ old('fab_main_total', $project->fab_main_total ?? '') }}">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-md-4 text-center">
+                            <div class="form-group">
+                                <label><strong>Estimated Hours (Grand Total)</strong></label>
+                                <input type="text" readonly class="form-control text-center font-weight-bold" id="estimated_hours" name="estimated_hours" value="{{ old('estimated_hours', $project->estimated_hours ?? '0.00') }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Estimated Hours</label>
+                        <input type="text" name="estimated_hours" id="estimated_hours" class="form-control" value="{{ old('estimated_hours', $project->estimated_hours ?? '0.00') }}" tabindex="17">
+                    </div>
+                </div> --}}
             </div>
         </div>
         <div class="card-footer" align="center">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="17"><i class="fas fa-save"></i> Save</button>
-             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="18"><i class="fas fa-undo-alt"></i> Reset</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="30"><i class="fas fa-save"></i> Save</button>
+             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="31"><i class="fas fa-undo-alt"></i> Reset</button>
         </div>
     </form>
 </div>
@@ -275,10 +554,8 @@ $(function () {
             form.submit();
         }
     });
-    $('#start_date').datetimepicker({
-        format: 'DD/MM/YYYY'
-    });
 });
+
 
 $(function () {
 
@@ -300,5 +577,41 @@ $(function () {
     calculateKitty();
 
 });
+
+$(function () {
+
+    function sumGroup(selector) {
+        let total = 0;
+        $(selector).each(function () {
+            total += parseFloat($(this).val()) || 0;
+        });
+        return total;
+    }
+
+    function calculateEstimatedHours() {
+        let appMiscTotal  = sumGroup(".app_misc");
+        let appMainTotal  = sumGroup(".app_main");
+
+        $("#app_misc_total").val(appMiscTotal.toFixed(2));
+        $("#app_main_total").val(appMainTotal.toFixed(2));
+
+        let fabMiscTotal   = sumGroup(".fab_misc");
+        let fabMainTotal  = sumGroup(".fab_main");
+
+        $("#fab_misc_total").val(fabMiscTotal.toFixed(2));
+        $("#fab_main_total").val(fabMainTotal.toFixed(2));
+
+        let grandTotal = appMiscTotal + appMainTotal + fabMiscTotal + fabMainTotal;
+        $("#estimated_hours").val(grandTotal.toFixed(2));
+    }
+
+    $(document).on("input", ".app_misc, .app_main, .fab_misc, .fab_main", function () {
+        calculateEstimatedHours();
+    });
+
+    // run once on load (edit mode)
+    calculateEstimatedHours();
+});
+
 </script>
 @endsection

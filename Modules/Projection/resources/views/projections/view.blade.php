@@ -118,25 +118,37 @@
                            </tr>
                         </thead>
                         <tbody>
-                           @foreach($running_projects as $running_project)
-                           <tr>
-                              <td>{{ $loop->iteration }}</td>
-                              <td>{{ $running_project->project->project_code }}</td>
-                              <td>{{ $running_project->project->project_name }}</td>
-                              <td>{{ $running_project->project->client->name}}</td>
-                              <td>{{ $running_project->projection_value }}</td>
-                              <td>{{ $running_project->type }}</td>
-                              <td>{{ $running_project->billing_desc }}</td>
-                              <td>{{ $running_project->status }}</td>
-                              <td>{{ $running_project->remarks }}</td>
-                              <td>{{ $running_project->project->po}}</td>
-                              <td>{{ $running_project->invoice_details }}</td>
-                              <td>
-                                 <a class="btn btn-app" href="{{route('runningprojects.editdetails', $running_project->id)}}"><i class="far fa-edit"></i></a>
-                                 <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('runningprojects.deletedetails', ['id' => $running_project->id]) }}"><i class="far fa-trash-alt"></i></a>
-                              </td>
-                           </tr>
-                           @endforeach
+                           @if($running_projects->count() == 0)
+                              <tr>
+                                 <td colspan="12" class="text-center">
+                                       @if(in_array($empDesig, ['Admin','PMO']))
+                                          Select a Project Manager to view running projects
+                                       @else
+                                          No running projects found
+                                       @endif
+                                 </td>
+                              </tr>
+                           @else
+                              @foreach($running_projects as $running_project)
+                              <tr>
+                                 <td>{{ $loop->iteration }}</td>
+                                 <td>{{ $running_project->project->project_code }}</td>
+                                 <td>{{ $running_project->project->project_name }}</td>
+                                 <td>{{ $running_project->project->client->name}}</td>
+                                 <td>{{ $running_project->projection_value }}</td>
+                                 <td>{{ $running_project->type }}</td>
+                                 <td>{{ $running_project->billing_desc }}</td>
+                                 <td>{{ $running_project->status }}</td>
+                                 <td>{{ $running_project->remarks }}</td>
+                                 <td>{{ $running_project->project->po}}</td>
+                                 <td>{{ $running_project->invoice_details }}</td>
+                                 <td>
+                                    <a class="btn btn-app" href="{{route('runningprojects.editdetails', $running_project->id)}}"><i class="far fa-edit"></i></a>
+                                    <a href="#" class="btn btn-app-delete delete-btn" data-url="{{ route('runningprojects.deletedetails', ['id' => $running_project->id]) }}"><i class="far fa-trash-alt"></i></a>
+                                 </td>
+                              </tr>
+                              @endforeach
+                           @endif
                         </tbody>
                      </table>
                   </div>

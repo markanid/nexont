@@ -122,6 +122,10 @@
                         <td>Start Date</td>
                         <td>{{ $project->start_date ? $project->start_date->format('d/m/Y') : '-' }}</td>
                     </tr>
+                    <tr>
+                        <td>Estimated Hours</td>
+                        <td>{{ $project->estimated_hours ?? '-' }} hrs</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

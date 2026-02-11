@@ -26,14 +26,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Project::class, 'client_id');
     }
-    
-    public function managedProjects()
-    {
-        return $this->hasMany(Project::class, 'project_manager_id');
-    }
-
-    public function salesProjects()
-    {
-        return $this->hasMany(Project::class, 'sales_manager_id');
-    }
 }

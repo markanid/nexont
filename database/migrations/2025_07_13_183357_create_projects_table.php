@@ -22,16 +22,28 @@ return new class extends Migration
             $table->unsignedBigInteger('sales_manager_id')->nullable();
 
             $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->decimal('project_cost', 15, 2)->default(0.00);
+            $table->string('project_cid', 50)->nullable();
+            $table->string('po', 100)->nullable();
+
+            $table->integer('apr_main_steel')->nullable();
+            $table->integer('apr_misc_steel')->nullable();
+
+            $table->decimal('po_main_sd', 10, 2)->nullable();
+            $table->decimal('po_misc_sd', 10, 2)->nullable();
+            $table->decimal('po_engineering', 10, 2)->nullable();
+            
+            $table->string('po_currency', 50)->nullable();
+
+            $table->decimal('kitty', 10, 2)->nullable();
+            $table->decimal('covalue', 10, 2)->nullable();
 
             $table->enum('status', ['Planned', 'On Going', 'Completed', 'On Hold', 'Cancelled'])->default('Planned');
             $table->timestamps();
 
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
             $table->foreign('client_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('project_manager_id')->references('id')->on('users')->onDelete('set null');
-            $table->foreign('sales_manager_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('project_manager_id')->references('id')->on('employees')->onDelete('set null');
+            $table->foreign('sales_manager_id')->references('id')->on('employees')->onDelete('set null');
         });
     }
 

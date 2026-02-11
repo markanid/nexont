@@ -40,12 +40,13 @@
     <form id="EmployeeForm" method="post" action="{{ route('employees.update') }}" enctype="multipart/form-data">
     @csrf
         <input type="hidden" name="id" value="{{ $employee->id ?? '' }}">
+        <input type="hidden" id="admin_id" value="{{ $adminId }}">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Employee Code <sup>*</sup></label>
-                        <input type="text" name="employee_code" class="form-control" value="{{ old('employee_code', $employee->employee_code ?? $employee_code) }}" readonly>
+                        <input type="text" name="employee_code" class="form-control" value="{{ old('employee_code', $employee->employee_code ?? $employee_code) }}" tabindex="0">
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -84,7 +85,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Designation <sup>*</sup></label>
-                        <select name="designation" id="designation" class="form-control" tabindex="4">
+                        <select name="designation" id="designation" class="form-control" tabindex="6">
                             <option value="">-- Select Designation --</option>
 
                             @if($isEdit && $isAdminEdit)
@@ -92,7 +93,7 @@
                                 <option value="Admin" selected>Admin</option>
                             @else
                                 {{-- Create OR Edit non-admin user --}}
-                                @php $selectedRole = old('role', $employee->designation ?? ''); @endphp
+                                @php $selectedRole = old('designation', $employee->designation ?? ''); @endphp
                                 <option value="Project Manager" {{ $selectedRole == 'Project Manager' ? 'selected' : '' }}>Project Manager</option>
                                 <option value="PMO" {{ $selectedRole == 'PMO' ? 'selected' : '' }}>PMO</option>
                                 <option value="Sales Manager" {{ $selectedRole == 'Sales Manager' ? 'selected' : '' }}>Sales Manager</option>
@@ -105,8 +106,23 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
+                        <label>Target</label>
+                        <input type="number" step="0.01" name="target" class="form-control"
+                            value="{{ old('target', $employee->target ?? 0) }}" tabindex="7">
+                    </div>
+                </div>
+                <div class="col-md-4" id="reporting_to_wrapper" style="display:none;">
+                    <div class="form-group">
+                        <label>Reporting To</label>
+                        <select name="reporting_to" id="reporting_to" class="form-control" tabindex="8">
+                            <option value="">-- Select --</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
                         <label>Status</label>
-                        <select name="status" class="form-control" tabindex="7">
+                        <select name="status" class="form-control" tabindex="9">
                             <option value="Active" {{ old('status', $employee->status ?? '') == 'Active' ? 'selected' : '' }}>Active</option>
                             <option value="Inactive" {{ old('status', $employee->status ?? '') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
                         </select>
@@ -117,7 +133,7 @@
 						<label for="customFile">Image(150x150)</label>
                         	<div class="input-group">
 							<div class="custom-file">
-                                <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" tabindex="8">
+                                <input type="file" class="custom-file-input" id="customFile" name="image" accept="image/png, image/jpeg, image/jpg, image/gif, image/webp" tabindex="10">
                                 <label class="custom-file-label" for="customFile">Choose file</label>
 							</div>
                         </div>
@@ -134,8 +150,8 @@
             </div>
         </div>
         <div class="card-footer" align="center">
-            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="9"><i class="fas fa-save"></i> Save</button>
-             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="10"><i class="fas fa-undo-alt"></i> Reset</button>
+            <button type="submit" id="submitBtn" class="btn btn-primary btn-flat" tabindex="11"><i class="fas fa-save"></i> Save</button>
+             <button type="reset" value="Reset" id="resetbtn" class="btn btn-secondary  btn-flat" tabindex="12"><i class="fas fa-undo-alt"></i> Reset</button>
         </div>
     </form>
 </div>
@@ -166,4 +182,60 @@ $(function () {
     });
 });
 </script>
+<script>
+$(function () {
+
+    let pmos = @json($pmoUsers);
+    let pms  = @json($pmUsers);
+    let adminId = $('#admin_id').val();
+
+    // always keep as STRING
+    let oldReporting = "{{ old('reporting_to', $employee->reporting_to ?? '') }}";
+
+    function updateReportingTo() {
+        let role = $('#designation').val();
+        let $select = $('#reporting_to');
+        let $wrapper = $('#reporting_to_wrapper');
+
+        $select.empty().append('<option value="">-- Select --</option>');
+
+        if (['Project Manager', 'Accountant', 'Sales Manager'].includes(role)) {
+            $wrapper.show();
+            pmos.forEach(u => {
+                $select.append(`<option value="${u.id}">${u.name} (PMO)</option>`);
+            });
+        }
+        else if (role === 'Employee') {
+            $wrapper.show();
+            pms.forEach(u => {
+                $select.append(`<option value="${u.id}">${u.name} (PM)</option>`);
+            });
+        }
+        else if (['Admin','PMO'].includes(role)) {
+            $wrapper.hide();
+            $select.val(adminId);
+            return;
+        }
+        else {
+            $wrapper.hide();
+        }
+
+        // ✅ FORCE STRING MATCH
+        if (oldReporting !== '') {
+            $select.val(oldReporting.toString());
+        }
+    }
+
+    $('#designation').on('change', function(){
+        oldReporting = ''; // reset only when user changes role manually
+        updateReportingTo();
+    });
+
+    updateReportingTo(); // run on page load (edit + create)
+
+});
+</script>
+
+
+
 @endsection

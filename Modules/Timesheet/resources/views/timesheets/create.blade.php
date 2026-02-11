@@ -72,17 +72,42 @@
                         @endif
                     </div>
                 </div>
+                {{-- <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Tasks <sup>*</sup></label>
+                        <div class="border p-2" style="max-height:200px; overflow-y:auto;">
+                            @foreach($tasks as $task)
+                                <div class="form-check">
+                                    <input class="form-check-input task-checkbox" 
+                                        type="checkbox" 
+                                        value="{{ $task->id }}" 
+                                        data-name="{{ $task->title }}" 
+                                        id="task_{{ $task->id }}">
+                                    <label class="form-check-label" for="task_{{ $task->id }}">
+                                        {{ $task->title }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div> --}}
+
                 <div class="col-md-4">
                     <div class="form-group">
                         <label>Tasks <sup>*</sup></label>
-                        <select id="task_select" class="form-control" tabindex="3">
+                        <select id="task_select" multiple class="form-control">
+                            @foreach($tasks as $task)
+                                <option value="{{ $task->id }}">{{ $task->title }}</option>
+                            @endforeach
+                        </select>
+                        {{-- <select id="task_select" class="form-control" tabindex="3">
                             <option value="">Select</option>
                             @foreach($tasks as $task)
                                 <option value="{{ $task->id }}" data-name="{{ $task->title }}">
                                     {{ $task->title }}
                                 </option>
                             @endforeach
-                        </select>
+                        </select> --}}
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -122,12 +147,53 @@
     color: #ffffff;
 }
 
+#task_select {
+    display: none;
+}
+
+.select2-container {
+    width: 100% !important;
+}
 </style>
 @endsection
 
 @section('scripts')
 <script>
 $(function () {
+    
+    $('#task_select').select2({
+        placeholder: "Select Tasks",
+        closeOnSelect: false,
+        width: '100%',
+        templateResult: formatState,
+        templateSelection: formatState
+    });
+
+    function formatState(state) {
+        if (!state.id) return state.text;
+        return $('<span><input type="checkbox" style="margin-right:8px;" /> ' + state.text + '</span>');
+    }
+
+    function syncCheckboxes() {
+        setTimeout(() => {
+            $('.select2-results__option').each(function () {
+                let option = $(this);
+                let isSelected = option.attr('aria-selected') === 'true';
+                option.find('input[type="checkbox"]').prop('checked', isSelected);
+            });
+        }, 10);
+    }
+
+    // Sync checkbox state on select/unselect
+    $('#task_select').on('select2:select select2:unselect', function () {
+        syncCheckboxes();
+    });
+
+    // ALSO sync when dropdown opens
+    $('#task_select').on('select2:open', function () {
+        syncCheckboxes();
+    });
+
     bsCustomFileInput.init();
     $.validator.setDefaults({
         submitHandler: function (form) {
@@ -142,48 +208,99 @@ $('#project').change(function () {
 });
 
 // Add Task Button Click
+// $('#addTaskBtn').click(function () {
+//     let projectId   = $('#project').val();
+//     let projectName = $('#project option:selected').text();
+//     let taskId      = $('#task_select').val();
+//     let taskName    = $('#task_select option:selected').data('name');
+
+//     if (!projectId || !taskId) {
+//         toastr.error('Project or task is missing', 'Missing Information');
+//         return;
+//     }
+
+//     createProjectTable(projectId, projectName);
+
+//     let tableBody = $('#project-table-' + projectId + ' .task-body');
+
+//     if (tableBody.find(`input[name="task_id[]"][value="${taskId}"]`).length) {
+//         toastr.error('This task is already added for the selected project!', 'Duplicate Task');
+//         return;
+//     }
+
+//     // Append new task (no activity_id yet)
+//     tableBody.append(`
+//         <tr>
+//             <td>
+//                 ${taskName}
+//                 <input type="hidden" name="project_id[]" value="${projectId}">
+//                 <input type="hidden" name="task_id[]" value="${taskId}">
+//                 <input type="hidden" name="activity_id[]" value="">
+//             </td>
+//             <td>
+//                 <input type="number" step="0.1" class="form-control" name="time_hours[]" required>
+//             </td>
+//             <td>
+//                 <button type="button" class="btn btn-danger btn-sm removeRow">
+//                     <i class="fas fa-trash"></i>
+//                 </button>
+//             </td>
+//         </tr>
+//     `);
+
+//     $('#task_select').val('').trigger('change');
+// });
 $('#addTaskBtn').click(function () {
     let projectId   = $('#project').val();
     let projectName = $('#project option:selected').text();
-    let taskId      = $('#task_select').val();
-    let taskName    = $('#task_select option:selected').data('name');
 
-    if (!projectId || !taskId) {
-        toastr.error('Project or task is missing', 'Missing Information');
+    if (!projectId) {
+        toastr.error('Project is missing', 'Missing Information');
+        return;
+    }
+
+    let taskIds = $('#task_select').val(); // array of selected task IDs
+
+    if (!taskIds || taskIds.length === 0) {
+        toastr.error('Please select at least one task', 'Missing Information');
         return;
     }
 
     createProjectTable(projectId, projectName);
-
     let tableBody = $('#project-table-' + projectId + ' .task-body');
 
-    if (tableBody.find(`input[name="task_id[]"][value="${taskId}"]`).length) {
-        toastr.error('This task is already added for the selected project!', 'Duplicate Task');
-        return;
-    }
+    taskIds.forEach(function(taskId){
+        let taskName = $('#task_select option[value="'+taskId+'"]').text();
 
-    // Append new task (no activity_id yet)
-    tableBody.append(`
-        <tr>
-            <td>
-                ${taskName}
-                <input type="hidden" name="project_id[]" value="${projectId}">
-                <input type="hidden" name="task_id[]" value="${taskId}">
-                <input type="hidden" name="activity_id[]" value="">
-            </td>
-            <td>
-                <input type="number" step="0.1" class="form-control" name="time_hours[]" required>
-            </td>
-            <td>
-                <button type="button" class="btn btn-danger btn-sm removeRow">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    `);
+        // prevent duplicate task per project
+        if (tableBody.find(`input[name="task_id[]"][value="${taskId}"]`).length) {
+            return; // skip duplicate
+        }
 
-    $('#task_select').val('').trigger('change');
+        tableBody.append(`
+            <tr>
+                <td>
+                    ${taskName}
+                    <input type="hidden" name="project_id[]" value="${projectId}">
+                    <input type="hidden" name="task_id[]" value="${taskId}">
+                    <input type="hidden" name="activity_id[]" value="">
+                </td>
+                <td>
+                    <input type="number" step="0.1" class="form-control" name="time_hours[]" required>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm removeRow">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `);
+    });
+
+    // Clear selection after adding
+    $('#task_select').val(null).trigger('change');
 });
+
 
 
 // Create Project Table

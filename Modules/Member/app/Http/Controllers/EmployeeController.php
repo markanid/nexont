@@ -25,6 +25,12 @@ class EmployeeController extends Controller
         $isEdit             = isset($employee->id);
         $isAdminEdit        = $isEdit && $employee->designation === 'Admin';
         $employee_code      = $id ? $employee->employee_code : Employee::getEmployeeCode();
+
+        $adminId = Employee::where('designation', 'Admin')->value('id');
+        $data['pmoUsers'] = Employee::where('designation', 'PMO')->get();
+        $data['pmUsers']  = Employee::where('designation', 'Project Manager')->get();
+        $data['adminId']  = $adminId;
+
         $data['page_title'] = $id ? "Edit Employee" : "Create Employee";
         $data['isEdit']         = $isEdit;
         $data['isAdminEdit']    = $isAdminEdit;
@@ -41,6 +47,8 @@ class EmployeeController extends Controller
             'phone'              => 'nullable|string|max:20',
             'email'              => 'nullable|email|max:255',
             'designation'        => 'nullable|string|in:Admin,Project Manager,PMO,Sales Manager,Accountant,Employee',
+            'target'            => 'nullable|numeric|min:0',
+            'reporting_to'      => 'nullable|exists:employees,id',
             'status'             => 'nullable|in:Active,Inactive',
             'image'              => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'password' => $request->id
@@ -67,6 +75,12 @@ class EmployeeController extends Controller
             unset($validated['password']); // don't overwrite existing password
         }
 
+        $adminId = Employee::where('designation', 'Admin')->value('id');
+
+        if (in_array($validated['designation'], ['Admin', 'PMO'])) {
+            $validated['reporting_to'] = $adminId;
+        }
+
         $employee = Employee::updateOrCreate(
             ['id' => $request->id ?? null],
             $validated
@@ -85,7 +99,7 @@ class EmployeeController extends Controller
     {
         $data['title'] = "Employee";
         $data['page_title'] = "Employee Details";
-        $data['employee']   = Employee::findOrFail($id);
+        $data['employee']   = Employee::with('reportingTo')->findOrFail($id);
         return view('member::employees.view', $data);
     }
 

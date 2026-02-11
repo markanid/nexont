@@ -95,7 +95,7 @@
       </div>
       <div class="text-center mt-3">
         <p class="mb-2">Already have an account?</p>
-        <a href="{{ route('auth.login') }}" class="btn btn-outline-primary btn-block">
+        <a href="{{ route('login') }}" class="btn btn-outline-primary btn-block">
           <i class="fas fa-sign-in-alt"></i> Sign In Here
         </a>
       </div>

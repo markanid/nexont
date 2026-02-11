@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Timesheet\app\Http\Controllers\TimesheetController;
 
-Route::group(['middleware'=>'auth'],function(){
+Route::group(['middleware'=>'auth:employee'],function(){
 
     $resources = [
         'timesheets'       => TimesheetController::class,

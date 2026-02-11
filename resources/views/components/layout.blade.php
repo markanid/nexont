@@ -236,8 +236,7 @@
     $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
     $('#reservationdate').datetimepicker({
         format: 'DD/MM/YYYY'
-    });
-    
+    });    
   });
 </script>
 <script>

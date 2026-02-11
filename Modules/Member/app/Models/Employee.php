@@ -16,7 +16,7 @@ class Employee extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $guard = 'employee';
-    protected $fillable = ['employee_code', 'name', 'phone', 'email', 'password', 'designation', 'status', 'image'];
+    protected $fillable = ['employee_code', 'name', 'phone', 'email', 'password', 'designation', 'target', 'reporting_to', 'status', 'image'];
 
     protected $hidden = [
         'password',
@@ -24,14 +24,13 @@ class Employee extends Authenticatable
     
     public static function getEmployeeCode()
     {
-        $lastCode = Employee::latest('id')->first();
+        $lastCode = Employee::orderBy('employee_code', 'desc')->first();
         if (!$lastCode) {
-            return 'EMP_001';
+            return 'NX1001';
         }
         $lastCode = $lastCode->employee_code;
-        $codeParts = explode('_', $lastCode);
-        $number = intval(end($codeParts)) + 1;
-        return 'EMP_' . str_pad($number, 3, '0', STR_PAD_LEFT);
+        $number     = (int) str_replace('NX', '', $lastCode);
+        return 'NX' . str_pad($number + 1, 4, '0', STR_PAD_LEFT);
     }
 
     public function projections()
@@ -47,5 +46,25 @@ class Employee extends Authenticatable
     public function activities()
     {
         return $this->hasMany(Activity::class, 'employee_id' , 'id');
+    }
+    
+    public function managedProjects()
+    {
+        return $this->hasMany(Project::class, 'project_manager_id');
+    }
+
+    public function salesProjects()
+    {
+        return $this->hasMany(Project::class, 'sales_manager_id');
+    }
+
+    public function reportingTo()
+    {
+        return $this->belongsTo(Employee::class, 'reporting_to');
+    }
+
+    public function subordinates()
+    {
+        return $this->hasMany(Employee::class, 'reporting_to');
     }
 }

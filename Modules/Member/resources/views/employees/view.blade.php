@@ -69,6 +69,14 @@
                         <td>{{ $employee->designation }}</td>
                     </tr>
                     <tr>
+                        <td>Target</td>
+                        <td>{{ $employee->target }}</td>
+                    </tr>
+                    <tr>
+                        <td>Reporting To</td>
+                        <td>{{ $employee->reportingTo->name ?? '-' }}</td>
+                    </tr>
+                    <tr>
                         <td>Status</td>
                         <td>{{ $employee->status }}</td>
                     </tr>
