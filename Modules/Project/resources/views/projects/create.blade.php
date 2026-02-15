@@ -492,13 +492,6 @@
                         </div>
                     </div>
                 </div>
-
-                {{-- <div class="col-md-4">
-                    <div class="form-group">
-                        <label>Estimated Hours</label>
-                        <input type="text" name="estimated_hours" id="estimated_hours" class="form-control" value="{{ old('estimated_hours', $project->estimated_hours ?? '0.00') }}" tabindex="17">
-                    </div>
-                </div> --}}
             </div>
         </div>
         <div class="card-footer" align="center">

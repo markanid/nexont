@@ -49,7 +49,7 @@ class ProjectController extends Controller
             'project_manager_id'=> 'nullable|exists:employees,id',
             'sales_manager_id'  => 'nullable|exists:employees,id',
             'start_date'        => 'nullable|date',
-            'project_cid'       => 'nullable|numeric',
+            'project_cid'       => 'nullable|string|max:50',
             'po'                => 'nullable|string',
             'apr_main_steel'    => 'nullable|numeric',
             'apr_misc_steel'    => 'nullable|numeric',
