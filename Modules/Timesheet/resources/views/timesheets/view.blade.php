@@ -28,7 +28,7 @@
                 $loggedUser = auth('employee')->user();
             @endphp
 
-            @if($loggedUser->designation !== 'Employee' && $timesheet->is_approved != 1)
+            @if($loggedUser->designation !== 'Employee' && $loggedUser->id != $employee_id && $timesheet->is_approved != 1)
                 <form action="{{ route('timesheets.approve') }}" method="POST" style="display:inline;">
                     @csrf
                     <input type="hidden" name="date" value="{{ $date }}">
