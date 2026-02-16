@@ -309,10 +309,10 @@ function createProjectTable(projectId, projectName) {
 
     $('#projectTables').append(`
         <div class="card mt-3" id="project-table-${projectId}">
-            <div class="card-header bg-info text-white">
+            <div class="card-header bg-black">
                 <strong>${projectName}</strong>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body">
                 <table class="table table-bordered mb-0">
                     <thead>
                         <tr>

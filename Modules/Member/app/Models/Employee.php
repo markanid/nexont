@@ -47,6 +47,11 @@ class Employee extends Authenticatable
     {
         return $this->hasMany(Activity::class, 'employee_id' , 'id');
     }
+
+    public function approvals()
+    {
+        return $this->hasMany(Activity::class, 'approved_by' , 'id');
+    }
     
     public function managedProjects()
     {

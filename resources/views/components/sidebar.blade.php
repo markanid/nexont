@@ -53,20 +53,12 @@
                         </a>
                     </li>
                 @endif
-                @if(auth('employee')->check())    
-                    <li class="nav-item {{ menuActive(['timesheets.index', 'timesheets.edit', 'timesheets.create', 'timesheets.show'], 'menu-open') }}">
-                        <a href="#" class="nav-link {{ menuActive(['timesheets.index', 'timesheets.edit', 'timesheets.create', 'timesheets.show'], 'active') }}">
+                @if(auth('employee')->check()) 
+                    <li class="nav-item">
+                        <a href="{{ route('timesheets.index') }}" class="nav-link {{ menuActive(['timesheets.index', 'timesheets.edit', 'timesheets.create', 'timesheets.show'], 'active') }}">
                             <i class="nav-icon fas fa-user-clock"></i>
-                            <p>Timesheet <i class="fas fa-angle-left right"></i></p>
+                            <p>Timesheet</p>
                         </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('timesheets.index') }}" class="nav-link {{ menuActive(['timesheets.index', 'timesheets.edit', 'timesheets.create', 'timesheets.show'], 'active') }}">
-                                    <i class="nav-icon fas fa-user-clock"></i>
-                                    <p>Timesheet</p>
-                                </a>
-                            </li>
-                        </ul>
                     </li>
                 @endif
                 {{-- Admin / PMO: show Master & Utility --}}

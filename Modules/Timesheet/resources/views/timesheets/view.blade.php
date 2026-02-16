@@ -24,6 +24,20 @@
     <div class="card-header">
         <h3 class="card-title"><i class="fas fa-tasks"></i> {{ $page_title }}</h3>
         <div class="card-tools">
+            @php
+                $loggedUser = auth('employee')->user();
+            @endphp
+
+            @if($loggedUser->designation !== 'Employee' && $timesheet->is_approved != 1)
+                <form action="{{ route('timesheets.approve') }}" method="POST" style="display:inline;">
+                    @csrf
+                    <input type="hidden" name="date" value="{{ $date }}">
+                    <input type="hidden" name="employee_id" value="{{ $employee_id }}">
+                    <button type="submit" class="btn btn-warning btn-sm btn-flat">
+                        <i class="fas fa-check"></i> Approve
+                    </button>
+                </form>
+            @endif
             <a href="{{ route('timesheets.edit',['date' => $date, 'employee_id' => $employee_id]) }}" class="btn btn-success btn-sm btn-flat"> <i class="fas fa-edit"></i> Edit </a>
             <a href="{{ route('timesheets.index') }}" class="btn btn-dark btn-sm btn-flat"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
         </div>
@@ -63,10 +77,10 @@
             <div id="projectTables">
                 @foreach($activityByProject as $projectData)
                     <div class="card mt-3">
-                        <div class="card-header bg-info text-white">
+                        <div class="card-header bg-black">
                             <strong>{{ $projectData['project']->project_name }}</strong>
                         </div>
-                        <div class="card-body p-0">
+                        <div class="card-body">
                             <table class="table table-bordered mb-0">
                                 <thead>
                                     <tr>

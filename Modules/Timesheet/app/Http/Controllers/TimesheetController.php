@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Modules\Member\app\Models\Employee;
 use Modules\Project\app\Models\Project;
 use Modules\Task\app\Models\Task;
 use Modules\Timesheet\app\Models\Activity;
@@ -19,14 +21,54 @@ class TimesheetController extends Controller
      */
     public function index()
     {
-        $employeeId = Auth::id();
+        $user = auth('employee')->user();   // IMPORTANT: use employee guard
+        $userId = $user->id;
 
-        $activities = Activity::where('employee_id', $employeeId)
+        // 1) Decide which employee_ids are visible for this user
+        $visibleEmployeeIds = [$userId];
+
+        if ($user->designation === 'Project Manager') {
+
+            // own + employees reporting to this PM
+            $subIds = Employee::where('reporting_to', $userId)
+                ->where('designation', 'Employee')
+                ->pluck('id')
+                ->toArray();
+
+            $visibleEmployeeIds = array_values(array_unique(array_merge($visibleEmployeeIds, $subIds)));
+        }
+
+        elseif ($user->designation === 'PMO') {
+
+            // own + PMs reporting to this PMO
+            $pmIds = Employee::where('reporting_to', $userId)
+                ->where('designation', 'Project Manager')
+                ->pluck('id')
+                ->toArray();
+
+            $visibleEmployeeIds = array_values(array_unique(array_merge($visibleEmployeeIds, $pmIds)));
+        }
+
+        elseif ($user->designation === 'Admin') {
+
+            // Admin can see everything (recommended)
+            $visibleEmployeeIds = Employee::pluck('id')->toArray();
+
+            // If you want ONLY Admin + PMO + PM (not employees), use this instead:
+            // $visibleEmployeeIds = Employee::whereIn('designation', ['Admin','PMO','Project Manager'])
+            //     ->pluck('id')->toArray();
+        }
+
+        // 2) Fetch activities for those employee_ids
+        $activities = Activity::whereIn('employee_id', $visibleEmployeeIds)
             ->orderBy('date', 'desc')
             ->get();
 
-        $timesheets = $activities->groupBy(fn($item) => $item->date->format('Y-m-d'))
-            ->map(function ($items, $date) use ($employeeId) {
+        // 3) Group by date + employee_id (important when you list multiple employees)
+        $timesheets = $activities
+            ->groupBy(fn($item) => $item->date->format('Y-m-d') . '|' . $item->employee_id)
+            ->map(function ($items) {
+
                 $status = 'Approved';
                 if ($items->contains(fn($i) => $i->is_approved == 2)) {
                     $status = 'Rejected';
@@ -34,12 +76,15 @@ class TimesheetController extends Controller
                     $status = 'Not Approved';
                 }
 
+                $first = $items->first();
+
                 return [
-                    'date' => $date,
-                    'employee_id' => $employeeId,
+                    'date'            => $first->date->format('Y-m-d'),
+                    'employee_id'     => $first->employee_id,
                     'approval_status' => $status,
                 ];
-            })->values();
+            })
+            ->values();
 
         return view('timesheet::timesheets.index', [
             'timesheets' => $timesheets,
@@ -102,6 +147,40 @@ class TimesheetController extends Controller
         $employeeId = Auth::id();
         $date = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
 
+        $projectIds = array_values(array_unique($request->project_id ?? []));
+
+        // collect submitted activity_custom ids (only available in edit)
+        $submittedCustomIds = collect($request->activity_id ?? [])
+            ->filter()
+            ->unique()
+            ->values();
+
+        // ✅ figure out which Activity IDs belong to the entry being edited (so we can exclude them)
+        $excludeActivityIds = [];
+        if ($submittedCustomIds->isNotEmpty()) {
+            $excludeActivityIds = ActivityCustom::whereIn('id', $submittedCustomIds)
+                ->pluck('activity_id')
+                ->unique()
+                ->values()
+                ->all();
+        }
+
+        // ✅ DUPLICATE CHECK (works for both CREATE + UPDATE date change)
+        $duplicateExists = Activity::where('employee_id', $employeeId)
+            ->where('date', $date)
+            ->whereIn('project_id', $projectIds)
+            ->when(!empty($excludeActivityIds), function ($q) use ($excludeActivityIds) {
+                // during update, ignore the current activities being updated
+                $q->whereNotIn('id', $excludeActivityIds);
+            })
+            ->exists();
+
+        if ($duplicateExists) {
+            throw ValidationException::withMessages([
+                'project_id' => ['Repetition error: This project is already added for the selected date.'],
+            ]);
+        }
+
         DB::transaction(function () use ($request, $employeeId, $date) {
 
             // Group tasks by project
@@ -116,15 +195,35 @@ class TimesheetController extends Controller
 
             foreach ($grouped as $projectId => $tasks) {
 
-                // Get or create Activity for this project
-                $activity = Activity::firstOrCreate(
-                    [
-                        'employee_id' => $employeeId,
-                        'date'        => $date,
-                        'project_id'  => $projectId,
-                    ],
-                    [] // no extra fields for now
-                );
+                // ✅ If editing: find the Activity from existing activity_custom_ids
+                $existingCustomIds = collect($tasks)
+                    ->pluck('activity_custom_id')
+                    ->filter()
+                    ->values();
+
+                if ($existingCustomIds->isNotEmpty()) {
+                    // Find the existing activity through any existing activity_custom row
+                    $activityId = ActivityCustom::whereIn('id', $existingCustomIds)
+                        ->value('activity_id');
+
+                    $activity = Activity::findOrFail($activityId);
+
+                    // ✅ Update the SAME Activity (change date/project if user changed)
+                    $activity->update([
+                        'date'       => $date,
+                        'project_id' => $projectId,
+                    ]);
+                } else {
+                    // ✅ Create mode (new project/tasks)
+                    $activity = Activity::create(
+                        [
+                            'employee_id' => $employeeId,
+                            'date'        => $date,
+                            'project_id'  => $projectId,
+                        ],
+                        [] // no extra fields for now
+                    );
+                }
 
                 // Keep track of activity_custom_ids to detect deleted tasks
                 $existingIds = $activity->activityCustoms()->pluck('id')->toArray();
@@ -196,10 +295,55 @@ class TimesheetController extends Controller
         ]);
     }
 
-    public function destroy($id)
+    public function approve(Request $request)
     {
-        $timesheet = Activity::findOrFail($id);
-        $timesheet->delete();
-        return redirect()->route('timesheets.index')->with('success', 'Record deleted successfully');
+        $user = auth('employee')->user();
+
+        if ($user->designation === 'Employee') {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $date       = $request->date;
+        $employeeId = $request->employee_id;
+
+        Activity::where('employee_id', $employeeId)
+            ->where('date', $date)
+            ->update([
+                'is_approved' => 1,
+                'approved_by' => $user->id,
+                'approved_at' => now(),
+            ]);
+
+        return back()->with('success', 'Timesheet approved successfully.');
+    }
+
+    public function destroy(Request $request)
+    {
+        $employee   = auth('employee')->user();
+        $empDesig   = $employee->designation;
+        $date       = $request->date;
+        $employeeId = $request->employee_id;
+
+        $query = Activity::where('date', $date)
+            ->where('employee_id', $employeeId);
+
+        // Employee can delete only own records
+        if ($empDesig === 'Employee') {
+            $query->where('employee_id', $employee->id);
+        }
+
+        $timesheets = $query->get();
+
+        if ($timesheets->isEmpty()) {
+            abort(403, 'Unauthorized or invalid record.');
+        }
+
+        foreach ($timesheets as $timesheet) {
+            $timesheet->delete();
+        }
+
+        return redirect()
+            ->route('timesheets.index')
+            ->with('success', 'Record deleted successfully');
     }
 }

@@ -16,6 +16,7 @@ Route::group(['middleware'=>'auth:employee'],function(){
         Route::get("$resource/edit", [$controller, 'createOrEdit'])->name("$resource.edit");
         Route::post("$resource/update", [$controller, 'storeOrUpdate'])->name("$resource.update");
         Route::get("$resource/delete", [$controller, 'destroy'])->name("$resource.delete");
+        Route::post("$resource/approve", [$controller, 'approve'])->name("$resource.approve");
     }
 
 });

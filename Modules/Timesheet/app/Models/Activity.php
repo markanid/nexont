@@ -16,8 +16,8 @@ class Activity extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['date', 'project_id', 'employee_id'];
-    protected $casts = ['date' => 'date'];
+    protected $fillable = ['date', 'project_id', 'employee_id', 'approved_by', 'approved_at'];
+    protected $casts = ['date' => 'date', 'approved_at' => 'datetime'];
 
     public function project()
     {
@@ -32,6 +32,11 @@ class Activity extends Model
     public function activityCustoms()
     {
         return $this->hasMany(ActivityCustom::class, 'activity_id');
+    }
+
+    public function approver()
+    {
+        return $this->belongsTo(Employee::class, 'approved_by');
     }
 
     const STATUS_PENDING  = 0;
