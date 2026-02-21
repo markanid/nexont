@@ -28,28 +28,14 @@
          <a href="{{ route('projections.index') }}" class="btn btn-dark btn-sm btn-flat"><i class="fas fa-arrow-alt-circle-left"></i> Back</a>
       </div>
    </div>
+   
 </div>
-<div class="card card-primary card-tabs">
-   <div class="card-header p-0 pt-1">
-      <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
-         <li class="nav-item">
-            <a class="nav-link active" id="custom-tabs-one-home-tab" data-toggle="pill" href="#custom-tabs-one-home" role="tab" aria-controls="custom-tabs-one-home" aria-selected="true"><i class="far fa-file-alt"></i> Basic Details</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Running Projects</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Change Order</a>
-         </li>
-         <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Connection Design Value</a>
-         </li>
-      </ul>
-   </div>
+<div class="card card-navy">
+   <div class="card-header">
+        <h3 class="card-title"><i class="far fa-file-alt"></i> Basic Details</h3>
+    </div>
    <div class="card-body">
-      <div class="tab-content" id="custom-tabs-one-tabContent">
-         <div class="tab-pane fade show active" id="custom-tabs-one-home" role="tabpanel" aria-labelledby="custom-tabs-one-home-tab">
-            <div class="table-responsive">
+      <div class="table-responsive">
                <table class="table table-bordered">
                   <tbody>
                      <tr>
@@ -79,7 +65,7 @@
                                     <td>{{ $summary->creator->name ?? 'N/A' }}</td>
                                     <td>{{ number_format($summary->total_projection, 2) }}</td>
                                     <td>
-                                       <a class="btn btn-app view-user-projects" data-user="{{ $summary->created_by }}"><i class="far fa-eye"></i></a>
+                                       <a class="btn btn-app view-user-projects" data-user="{{ $summary->created_by }}" data-name="{{ $summary->creator->name }} "><i class="far fa-eye"></i></a>
                                     </td>
                                  </tr>
                               @empty
@@ -93,12 +79,32 @@
                   </div>
                @endif
             </div>
-         </div>
+   </div>
+</div>
+<div class="card card-primary card-tabs">
+   <div class="card-header p-0 pt-1">
+      <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+         
+         <li class="nav-item">
+            <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Running Projects</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages" role="tab" aria-controls="custom-tabs-one-messages" aria-selected="false">Change Order</a>
+         </li>
+         <li class="nav-item">
+            <a class="nav-link" id="custom-tabs-one-settings-tab" data-toggle="pill" href="#custom-tabs-one-settings" role="tab" aria-controls="custom-tabs-one-settings" aria-selected="false">Connection Design Value</a>
+         </li>
+      </ul>
+   </div>
+   <div class="card-body">
+      <div class="tab-content" id="custom-tabs-one-tabContent">
+         
          <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel" aria-labelledby="custom-tabs-one-profile-tab">
             <a class="btn btn-primary btn-sm btn-flat float-right" href="{{ route('runningprojects.adddetails', ['projection_id' => $projection->id]) }}"><i class="fas fa-plus-circle"></i> Create</a>
             <br>  <br>
             <div class="card">
                <div class="card-body">
+                  <h5 id="selected-user-title" class="mb-2 text-primary" style="display:none;"></h5>
                   <div class="table-responsive">
                      <table id="running_projects_table" class="table table-bordered table-striped">
                         <thead>
@@ -182,7 +188,12 @@
 $(document).ready(function() {
     $('.view-user-projects').on('click', function() {
         let userId = $(this).data('user');
+        let userName = $(this).data('name');
         let projectionId = {{ $projection->id }};
+
+         $('#selected-user-title')
+            .text(`${userName}`)
+            .show();
 
         $.ajax({
             url: "{{ route('projections.runningprojects.filter', $projection->id) }}",

@@ -79,7 +79,7 @@
                             <li class="nav-item">
                                 <a href="{{ route('users.index') }}" class="nav-link {{ menuActive(['users.index', 'users.create', 'users.edit', 'users.show'], 'active') }}">
                                     <i class="nav-icon fas fa-user-cog"></i>
-                                    <p>Users</p>
+                                    <p> Client Users</p>
                                 </a>
                             </li>
                             <li class="nav-item">
